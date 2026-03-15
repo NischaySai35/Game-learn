@@ -1,32 +1,64 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
-  roleInterest: String,
 
-  coins: {
-    type: Number,
-    default: 0,
+  name: String,
+
+  email: {
+    type: String,
+    unique: true
   },
+
+  password: String,
+
+  interestedRoles: [{
+    type: String
+  }],
+
+  skillsToLearn: [{
+    type: String
+  }],
 
   xp: {
     type: Number,
-    default: 0,
+    default: 0
+  },
+
+  coins: {
+    type: Number,
+    default: 0
   },
 
   streak: {
     type: Number,
-    default: 0,
+    default: 0
   },
 
-  coursesCompleted: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
-    },
-  ],
-});
+  dailyLearningTarget: {
+    type: Number,
+    default: 60
+  },
 
-module.exports = mongoose.model("User", userSchema);
+  todayLearningTime: {
+    type: Number,
+    default: 0
+  },
+
+  missedLearningTime: {
+    type: Number,
+    default: 0
+  },
+
+  level: {
+    type: Number,
+    default: 1
+  },
+
+  badge: {
+    type: String,
+    default: "Starter"
+  }
+
+})
+
+module.exports = mongoose.model("User", userSchema)

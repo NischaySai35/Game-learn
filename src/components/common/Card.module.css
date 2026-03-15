@@ -1,0 +1,64 @@
+.card {
+  background: linear-gradient(135deg, var(--card-bg) 0%, #3a3a53 100%);
+  border: 2px solid var(--card-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.card:hover {
+  border-color: var(--accent-xp);
+  box-shadow: 0 8px 32px rgba(57, 255, 20, 0.15);
+  transform: translateY(-4px);
+}
+
+/* Variants */
+.default {
+  background: linear-gradient(135deg, var(--card-bg) 0%, #3a3a53 100%);
+}
+
+.elevated {
+  background: linear-gradient(135deg, #3d3d54 0%, #4a4a6a 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.elevated:hover {
+  box-shadow: 0 12px 48px rgba(57, 255, 20, 0.2);
+}
+
+.minimal {
+  background: transparent;
+  border-color: transparent;
+  border-bottom: 2px solid var(--card-border);
+  border-radius: 0;
+  padding: var(--spacing-md);
+}
+
+.minimal:hover {
+  border-bottom-color: var(--accent-xp);
+  box-shadow: none;
+}
+
+.achievement {
+  background: linear-gradient(135deg, #2D2D44 0%, #3D3D54 100%);
+  border: 2px solid var(--accent-achievement);
+  position: relative;
+  overflow: hidden;
+}
+
+.achievement::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.achievement:hover {
+  border-color: var(--accent-achievement);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}

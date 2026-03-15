@@ -1,0 +1,30 @@
+.appContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0F0F23 0%, #1A1A2E 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 0 var(--spacing-md);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

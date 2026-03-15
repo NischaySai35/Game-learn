@@ -1,0 +1,15 @@
+# GitHub Issue Config
+blank_issues_are_disabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/NischaySai35/Game-learn/blob/main/README.md
+    about: Check our comprehensive documentation first
+  - name: 💬 Discussions
+    url: https://github.com/NischaySai35/Game-learn/discussions
+    about: Have a question? Ask in Discussions instead of Issues
+  - name: 🔒 Security Issue
+    url: https://github.com/NischaySai35/Game-learn/security/advisories
+    about: Report security vulnerabilities responsibly
+  - name: 🌐 Roadmap
+    url: https://github.com/NischaySai35/Game-learn/projects
+    about: Check our public roadmap for planned features

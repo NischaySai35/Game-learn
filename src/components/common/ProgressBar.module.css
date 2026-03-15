@@ -1,0 +1,102 @@
+.progressContainer {
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  position: relative;
+}
+
+.progressBar {
+  height: 100%;
+  transition: width 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--accent-xp) 0%, #32dd0b 100%);
+}
+
+.progressBar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: progressShine 2s infinite;
+}
+
+@keyframes progressShine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animated {
+  animation: progressFill 0.6s ease-out;
+}
+
+.label {
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 12px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.labelText {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: var(--spacing-xs);
+  display: block;
+}
+
+/* Height Variants */
+.sm {
+  height: 8px;
+}
+
+.md {
+  height: 16px;
+}
+
+.lg {
+  height: 24px;
+}
+
+/* Progress Bar Variants */
+.default {
+  background: linear-gradient(90deg, var(--accent-xp) 0%, #32dd0b 100%);
+}
+
+.xp {
+  background: linear-gradient(90deg, var(--accent-xp) 0%, #39FF14 100%);
+}
+
+.achievement {
+  background: linear-gradient(90deg, var(--accent-achievement) 0%, #ffd700 100%);
+}
+
+.streak {
+  background: linear-gradient(90deg, var(--accent-streak) 0%, #ff6b6b 100%);
+}
+
+.leaderboard {
+  background: linear-gradient(90deg, var(--accent-leaderboard) 0%, #00d4ff 100%);
+}
+
+.secondary {
+  background: linear-gradient(90deg, #6B6B8F 0%, #8a8aaf 100%);
+}

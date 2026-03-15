@@ -1,0 +1,119 @@
+.button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: left 0.3s ease;
+}
+
+.button:hover::before {
+  left: 100%;
+}
+
+/* Primary Button */
+.primary {
+  background: linear-gradient(135deg, var(--accent-xp) 0%, #32dd0b 100%);
+  color: var(--primary-dark);
+  box-shadow: 0 4px 15px rgba(57, 255, 20, 0.3);
+}
+
+.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(57, 255, 20, 0.5);
+}
+
+.primary:active {
+  transform: translateY(0);
+}
+
+.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary Button */
+.secondary {
+  background: var(--card-bg);
+  color: var(--accent-xp);
+  border: 2px solid var(--accent-xp);
+}
+
+.secondary:hover {
+  background: var(--accent-xp);
+  color: var(--primary-dark);
+  box-shadow: var(--glow);
+}
+
+/* Danger Button */
+.danger {
+  background: linear-gradient(135deg, var(--accent-streak) 0%, #ff4757 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+}
+
+/* Ghost Button */
+.ghost {
+  background: transparent;
+  color: var(--accent-xp);
+  border: 2px solid var(--accent-xp);
+}
+
+.ghost:hover {
+  background: var(--accent-xp);
+  color: var(--primary-dark);
+}
+
+/* Size Variants */
+.sm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 12px;
+}
+
+.md {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 14px;
+}
+
+.lg {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 16px;
+}
+
+.xl {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  font-size: 18px;
+}
+
+/* Glow Effect */
+.button.primary,
+.button.secondary:hover {
+  animation: none;
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(57, 255, 20, 0.3);
+}

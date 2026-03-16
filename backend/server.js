@@ -17,6 +17,7 @@ const learningRoutes = require("./routes/learningRoutes")
 const profileRoutes = require("./routes/profileRoutes")
 const progressRoutes = require("./routes/courseProgressRoutes")
 const unlockRoutes = require("./routes/unlockRoutes")
+const contentRoutes = require("./routes/contentRoutes")
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use("/api/learning", learningRoutes)
 app.use("/api/profile", profileRoutes)
 app.use("/api/progress", progressRoutes)
 app.use("/api/unlock", unlockRoutes)
+app.use("/api/content", contentRoutes)
 
 // Default route
 app.get("/", (req, res) => {

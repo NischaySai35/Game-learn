@@ -7,11 +7,15 @@ const unlockSchema = new mongoose.Schema({
     ref: "User"
   },
 
-  contentType: String,
+  contentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Content"
+  },
 
-  contentName: String,
-
-  cost: Number
+  unlockedAt: {
+    type: Date,
+    default: Date.now
+  }
 
 })
 

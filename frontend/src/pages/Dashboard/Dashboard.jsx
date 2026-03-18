@@ -15,6 +15,8 @@ export default function Dashboard() {
   const [sortBy, setSortBy] = useState('totalXP')
   const [loading, setLoading] = useState(true)
 
+  const hasStartedLearning = user.totalXP > 0 || user.currentXP > 0 || user.dailyLearning?.minutes > 0
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
@@ -60,6 +62,12 @@ export default function Dashboard() {
     { id: 'progress', label: 'My Progress', icon: '📈' },
     { id: 'leaderboard', label: 'Leaderboard', icon: '🏆' },
   ]
+
+  const metricLabels = {
+    totalXP: 'XP',
+    level: 'Level',
+    streak: 'Streak',
+  }
 
   return (
     <div className={styles.dashboardPage}>
@@ -115,18 +123,23 @@ export default function Dashboard() {
             {/* Learning Path */}
             <section className={styles.section}>
               <h2>📚 Learning Path</h2>
-              <motion.div
-                className={styles.progressList}
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                {loading ? (
-                  <div className={styles.loading}>
-                    <div className={styles.spinner} />
-                  </div>
-                ) : (
-                  progress.map((item, idx) => (
+
+              {loading ? (
+                <div className={styles.loading}>
+                  <div className={styles.spinner} />
+                </div>
+              ) : !hasStartedLearning ? (
+                <div className={styles.emptyState}>
+                  <p>You haven't started learning yet. Start your first course to begin tracking your path.</p>
+                </div>
+              ) : (
+                <motion.div
+                  className={styles.progressList}
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {progress.map((item, idx) => (
                     <motion.div
                       key={item.id}
                       className={styles.progressItem}
@@ -150,26 +163,31 @@ export default function Dashboard() {
                         {item.progress}%
                       </Badge>
                     </motion.div>
-                  ))
-                )}
-              </motion.div>
+                  ))}
+                </motion.div>
+              )}
             </section>
 
             {/* Skills Breakdown */}
             <section className={styles.section}>
               <h2>🎯 Skills Overview</h2>
-              <motion.div
-                className={styles.skillsList}
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                {loading ? (
-                  <div className={styles.loading}>
-                    <div className={styles.spinner} />
-                  </div>
-                ) : (
-                  skills.map((skill, idx) => (
+
+              {loading ? (
+                <div className={styles.loading}>
+                  <div className={styles.spinner} />
+                </div>
+              ) : !hasStartedLearning ? (
+                <div className={styles.emptyState}>
+                  <p>No skill data yet. Complete your first lesson to build skills.</p>
+                </div>
+              ) : (
+                <motion.div
+                  className={styles.skillsList}
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {skills.map((skill, idx) => (
                     <motion.div
                       key={idx}
                       className={styles.skillItem}
@@ -184,41 +202,52 @@ export default function Dashboard() {
                         height="md"
                       />
                     </motion.div>
-                  ))
-                )}
-              </motion.div>
+                  ))}
+                </motion.div>
+              )}
             </section>
 
             {/* Weekly Stats */}
             <section className={styles.section}>
               <h2>📊 Weekly Activity</h2>
-              <motion.div
-                className={styles.weeklyChart}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                {[
-                  { day: 'Mon', xp: 450 },
-                  { day: 'Tue', xp: 520 },
-                  { day: 'Wed', xp: 380 },
-                  { day: 'Thu', xp: 490 },
-                  { day: 'Fri', xp: 610 },
-                  { day: 'Sat', xp: 540 },
-                  { day: 'Sun', xp: 470 },
-                ].map((stat, idx) => (
-                  <motion.div
-                    key={stat.day}
-                    className={styles.chartBar}
-                    initial={{ height: 0 }}
-                    animate={{ height: `${(stat.xp / 610) * 200}px` }}
-                    transition={{ delay: idx * 0.05, duration: 0.6 }}
-                  >
-                    <div className={styles.barLabel}>{stat.day}</div>
-                    <div className={styles.barValue}>{stat.xp}</div>
-                  </motion.div>
-                ))}
-              </motion.div>
+
+              {loading ? (
+                <div className={styles.loading}>
+                  <div className={styles.spinner} />
+                </div>
+              ) : !hasStartedLearning ? (
+                <div className={styles.emptyState}>
+                  <p>No weekly activity yet. Start learning to see data here.</p>
+                </div>
+              ) : (
+                <motion.div
+                  className={styles.weeklyChart}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {[
+                    { day: 'Mon', xp: 450 },
+                    { day: 'Tue', xp: 520 },
+                    { day: 'Wed', xp: 380 },
+                    { day: 'Thu', xp: 490 },
+                    { day: 'Fri', xp: 610 },
+                    { day: 'Sat', xp: 540 },
+                    { day: 'Sun', xp: 470 },
+                  ].map((stat, idx) => (
+                    <motion.div
+                      key={stat.day}
+                      className={styles.chartBar}
+                      initial={{ height: 0 }}
+                      animate={{ height: `${(stat.xp / 610) * 200}px` }}
+                      transition={{ delay: idx * 0.05, duration: 0.6 }}
+                    >
+                      <div className={styles.barLabel}>{stat.day}</div>
+                      <div className={styles.barValue}>{stat.xp}</div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
             </section>
           </motion.div>
         )}
@@ -253,6 +282,10 @@ export default function Dashboard() {
               ))}
             </motion.div>
 
+            <div className={styles.leaderboardHeader}>
+              <h3>Top users by {metricLabels[sortBy]}</h3>
+              <span>{metricLabels[sortBy]} leaderboard view</span>
+            </div>
             {/* Leaderboard Table */}
             <motion.div
               className={styles.leaderboardContainer}
@@ -285,21 +318,21 @@ export default function Dashboard() {
                     </div>
 
                     <div className={styles.statCell}>
-                      <span className={styles.level}>Lv {user.level}</span>
-                    </div>
-
-                    <div className={styles.statCell}>
-                      <span className={styles.xp}>{user.totalXP.toLocaleString()}</span>
-                    </div>
-
-                    <div className={styles.statCell}>
-                      <motion.span
-                        className={styles.streak}
-                        animate={user.streak > 0 ? { scale: [1, 1.1, 1] } : {}}
-                        transition={{ duration: 1.5, repeat: Infinity }}
-                      >
-                        🔥 {user.streak}
-                      </motion.span>
+                      {sortBy === 'totalXP' && (
+                        <span className={styles.xp}>{user.totalXP.toLocaleString()} XP</span>
+                      )}
+                      {sortBy === 'level' && (
+                        <span className={styles.level}>Lv {user.level}</span>
+                      )}
+                      {sortBy === 'streak' && (
+                        <motion.span
+                          className={styles.streak}
+                          animate={user.streak > 0 ? { scale: [1, 1.1, 1] } : {}}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                          🔥 {user.streak}
+                        </motion.span>
+                      )}
                     </div>
                   </motion.div>
                 ))

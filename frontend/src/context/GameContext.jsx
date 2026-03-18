@@ -55,6 +55,8 @@ export const GameProvider = ({ children }) => {
     totalXP: 0,
     coins: 0,
     streakDays: 0,
+    badge: 'Starter',
+    recentActivity: [],
     dailyTargetMinutes: 60,
     interestedRoles: [],
     skills: [],
@@ -107,6 +109,7 @@ export const GameProvider = ({ children }) => {
       email: profile.email || '',
       interestedRoles: profile.interestedRoles || [],
       skills: profile.skills || [],
+      badge: profile.badge || 'Starter',
       recommendedCourses: roleCourseMap[profile.interestedRoles?.[0]] || [],
       ...profile,
     }
@@ -175,6 +178,7 @@ export const GameProvider = ({ children }) => {
       email,
       interestedRoles,
       skills,
+      badge: prevUser?.badge || 'Starter',
       dailyTargetMinutes,
       recommendedCourses: uniqueRec,
       dailyLearning: {

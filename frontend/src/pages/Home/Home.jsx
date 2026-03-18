@@ -178,7 +178,16 @@ export default function Home() {
               <motion.div key={course.id} variants={itemVariants}>
                 <CourseCard
                   {...course}
-                  onClick={() => navigate(`/course/${course.id}`)}
+                  progress={isAuthenticated ? course.progress : 0}
+                  completed={isAuthenticated ? course.completed : 0}
+                  isAuthenticated={isAuthenticated}
+                  onClick={() => {
+                    if (isAuthenticated) {
+                      navigate(`/course/${course.id}`)
+                    } else {
+                      navigate('/login')
+                    }
+                  }}
                 />
               </motion.div>
             ))}

@@ -1,42 +1,67 @@
 const Content = require("../models/Content")
 
-// Add new content
+// Create premium content
 exports.createContent = async (req, res) => {
   try {
-    const content = new Content(req.body)
-    await content.save()
+
+    const { title, type, description, role, cost } = req.body
+
+    if (!title || !type) {
+      return res.status(400).json({ message: "Missing fields" })
+    }
+
+    const content = await Content.create({
+      title,
+      type,
+      description,
+      role,
+      cost
+    })
 
     res.status(201).json(content)
+
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 }
 
-// Get all content
+
+// Get all premium content
 exports.getAllContent = async (req, res) => {
   try {
+
     const content = await Content.find()
+
     res.json(content)
+
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 }
 
-// Get content by type
-exports.getContentByType = async (req, res) => {
+
+// Get locked content only
+exports.getPremiumContent = async (req, res) => {
   try {
-    const content = await Content.find({ type: req.params.type })
+
+    const content = await Content.find({ cost: { $gt: 0 } })
+
     res.json(content)
+
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 }
 
-// Get single content
-exports.getContentById = async (req, res) => {
+
+// Get by role
+exports.getContentByRole = async (req, res) => {
   try {
-    const content = await Content.findById(req.params.id)
+
+    const content = await Content.find({ role: req.params.role })
+
     res.json(content)
+
   } catch (error) {
     res.status(500).json({ message: error.message })
   }

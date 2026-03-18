@@ -7,14 +7,33 @@ const competitionSchema = new mongoose.Schema({
     ref: "Quiz"
   },
 
-  participants: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  }],
+  participants: [
+    {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      },
+
+      score: {
+        type: Number,
+        default: 0
+      },
+
+      rank: {
+        type: Number
+      }
+    }
+  ],
 
   winner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
+  },
+
+  status: {
+    type: String,
+    enum: ["waiting", "ongoing", "completed"],
+    default: "waiting"
   },
 
   createdAt: {

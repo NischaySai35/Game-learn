@@ -7,31 +7,45 @@ function generateCertificate(userName, courseName, filePath) {
 
   doc.pipe(fs.createWriteStream(filePath))
 
+  // Current Date & Time
+  const now = new Date()
+  const date = now.toLocaleDateString()
+  const time = now.toLocaleTimeString()
+
+  // Title
   doc.fontSize(30)
      .text("Certificate of Completion", { align: "center" })
 
-  doc.moveDown()
+  doc.moveDown(2)
 
+  // Content
   doc.fontSize(20)
-     .text(`This certifies that`, { align: "center" })
+     .text("This certifies that", { align: "center" })
 
   doc.moveDown()
 
-  doc.fontSize(25)
+  doc.fontSize(26)
      .text(userName, { align: "center" })
 
   doc.moveDown()
 
   doc.fontSize(20)
-     .text(`has successfully completed the course`, { align: "center" })
+     .text("has successfully completed the course", { align: "center" })
 
   doc.moveDown()
 
-  doc.fontSize(22)
+  doc.fontSize(24)
      .text(courseName, { align: "center" })
 
-  doc.end()
+  doc.moveDown(2)
 
+  //  Date & Time
+  doc.fontSize(16)
+     .text(`Date: ${date}`, { align: "center" })
+
+  doc.text(`Time: ${time}`, { align: "center" })
+
+  doc.end()
 }
 
 module.exports = generateCertificate

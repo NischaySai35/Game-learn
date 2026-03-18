@@ -1,58 +1,62 @@
-const CourseProgress = require("../models/CourseProgress")
+const mongoose = require("mongoose")
 
-exports.getProgress = async (req, res) => {
+const progressSchema = new mongoose.Schema({
 
-  try {
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
 
-    const progress = await CourseProgress.findOne({
-      userId: req.params.userId,
-      courseId: req.params.courseId
-    })
+  courseId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Course"
+  },
 
-    res.json(progress)
+  // Topics
+  completedTopics: [String],
 
-  } catch (error) {
+  // Final Quiz
+  finalQuizCompleted: {
+    type: Boolean,
+    default: false
+  },
 
-    res.status(500).json({ error: error.message })
+  finalQuizScore: {
+    type: Number,
+    default: 0
+  },
 
+  // Project
+  projectSubmitted: {
+    type: Boolean,
+    default: false
+  },
+
+  projectStatus: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending"
+  },
+
+  projectScore: {
+    type: Number,
+    default: 0
+  },
+
+  projectFeedback: String,
+
+  projectDetails: {
+    title: String,
+    githubLink: String,
+    deploymentLink: String
+  },
+
+  // Final Completion
+  isCompleted: {
+    type: Boolean,
+    default: false
   }
 
-}
+}, { timestamps: true })
 
-
-exports.updateTopicProgress = async (req, res) => {
-
-  try {
-
-    const { userId, courseId, topic } = req.body
-
-    let progress = await CourseProgress.findOne({ userId, courseId })
-
-    if (!progress) {
-
-      progress = new CourseProgress({
-        userId,
-        courseId,
-        completedTopics: []
-      })
-
-    }
-
-    if (!progress.completedTopics.includes(topic)) {
-      progress.completedTopics.push(topic)
-    }
-
-    progress.progressPercentage =
-      (progress.completedTopics.length / 10) * 100
-
-    await progress.save()
-
-    res.json(progress)
-
-  } catch (error) {
-
-    res.status(500).json({ error: error.message })
-
-  }
-
-}
+module.exports = mongoose.model("CourseProgress", progressSchema)

@@ -1,16 +1,19 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const courseSchema = new mongoose.Schema({
+
   title: String,
-  category: String,
-  difficulty: String,
 
-  modules: [
+  description: String,
+
+  role: String,
+
+  topics: [
     {
-      title: String,
-      lessons: [String],
-    },
-  ],
-});
+      title: String
+    }
+  ]
 
-module.exports = mongoose.model("Course", courseSchema);
+})
+
+module.exports = mongoose.model("Course", courseSchema)

@@ -2,22 +2,35 @@ const mongoose = require("mongoose")
 
 const userSchema = new mongoose.Schema({
 
-  name: String,
+  name: {
+    type: String,
+    required: true
+  },
 
   email: {
     type: String,
+    required: true,
     unique: true
   },
 
-  password: String,
+  password: {
+    type: String,
+    required: true
+  },
 
   interestedRoles: [{
     type: String
   }],
 
-  skillsToLearn: [{
-    type: String
-  }],
+  skillsProgress: [
+    {
+      skill: String,
+      progress: {
+        type: Number,
+        default: 0
+      }
+    }
+  ],
 
   xp: {
     type: Number,
@@ -59,6 +72,6 @@ const userSchema = new mongoose.Schema({
     default: "Starter"
   }
 
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model("User", userSchema)

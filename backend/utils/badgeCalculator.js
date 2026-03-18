@@ -1,11 +1,11 @@
 function calculateBadge(courseCount) {
 
-  if (courseCount >= 10) return "Expert"
-  if (courseCount >= 6) return "Advanced"
-  if (courseCount >= 4) return "Skilled"
-  if (courseCount >= 2) return "Beginner"
+  if (courseCount >= 8) return "Expert"
+  if (courseCount >= 5) return "Advanced"
+  if (courseCount >= 3) return "Skilled"
+  if (courseCount >= 1) return "Beginner"
 
-  return "Starter"
+  return "Newbie"
 
 }
 

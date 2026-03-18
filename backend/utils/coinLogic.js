@@ -13,16 +13,16 @@ function calculateCoins(activity, score, rank = null) {
     return score * 5
   }
 
+  if (activity === "topicCompletion") {
+    return 2
+  }
+
   if (activity === "courseCompletion") {
     return 50
   }
 
   if (activity === "projectSubmission") {
     return 75
-  }
-
-  if (activity === "dailyLogin") {
-    return 10
   }
 
   return 0

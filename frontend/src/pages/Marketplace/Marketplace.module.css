@@ -1,0 +1,11 @@
+.marketPage { padding: 2rem 1.2rem; max-width: 1040px; margin: 0 auto; }
+.intro h1 { margin: 0; font-size: 2rem; }
+.intro p { color: #a4b4dd; }
+.shopGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.card { background: rgba(19, 29, 55, 0.94); border: 1px solid rgba(76, 107, 190, 0.37); border-radius: 14px; padding: 1rem; }
+.card h3 { margin: 0 0 0.6rem; }
+.card p { color: #a6b8dd; min-height: 52px; }
+.bottomRow { margin-top: 0.8rem; display: flex; justify-content: space-between; align-items: center; }
+.card button { border: none; color: #fff; padding: 0.5rem 0.9rem; border-radius: 8px; background: linear-gradient(135deg, #3291ff, #74c2ff); cursor: pointer; }
+.card.unlocked { border-color: #4df38e; background: rgba(18, 40, 80, 0.96); }
+.card.unlocked button { background: rgba(255,255,255,0.3); cursor:not-allowed; }

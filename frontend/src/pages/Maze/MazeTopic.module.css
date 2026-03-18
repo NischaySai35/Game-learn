@@ -1,0 +1,18 @@
+.mazePage { padding: 1.8rem 1.2rem; max-width: 1150px; margin: 0 auto; }
+.header h1 { margin-bottom: 0.25rem; }
+.header p { color: #a5b8d9; }
+.mazeGridWrap { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem; margin-top: 1rem; }
+.grid { display: grid; gap: 4px; background: rgba(22, 35, 68, 0.8); padding: 0.65rem; border-radius: 12px; border: 1px solid rgba(90, 150, 255, 0.3); }
+.cell { width: 100%; aspect-ratio: 1/1; border-radius: 6px; background: rgba(10, 20, 44, 0.9); display: flex; align-items: center; justify-content: center; color: #95c1ff; font-size: 8px; position: relative; }
+.player { background: linear-gradient(135deg, #3f78ff, #63c1ff); color: #fff; font-weight: 700; }
+.nextNode { box-shadow: 0 0 0 2px rgba(104, 230, 255, 0.7); }
+.panel { background: rgba(11, 21, 41, 0.92); border: 1px solid rgba(86, 140, 250, 0.25); border-radius: 14px; padding: 1rem; }
+.nodeType { color: #8bc7ff; margin: 0.4rem 0; }
+.mcqArea button { width: 100%; margin: 0.15rem 0; padding: 0.5rem; background: rgba(27, 44, 85, 0.95); border: 1px solid rgba(92, 160, 255, 0.4); border-radius: 8px; color: #fff; cursor: pointer; }
+.footerInfo { margin-top: 1rem; }
+.feedback { margin-top: 0.6rem; color: #7af5a1; }
+.moveButtons { display: grid; grid-template-columns: repeat(3, minmax(40px, 1fr)); gap: 0.3rem; margin-top: 0.8rem; }
+.moveButtons button { padding: 0.5rem 0.7rem; background: linear-gradient(135deg, #c7d5ff, #9eafff); border: none; border-radius: 8px; cursor: pointer; }
+.backBtn { margin-top: 0.8rem; width: 100%; background: linear-gradient(140deg, #55bcff, #3a57ff); border: none; padding: 0.7rem 0.9rem; color: #fff; border-radius: 10px; cursor: pointer; }
+.loading { padding: 1.5rem; font-size: 1.05rem; }
+@media (max-width: 976px) { .mazeGridWrap { grid-template-columns: 1fr; } }

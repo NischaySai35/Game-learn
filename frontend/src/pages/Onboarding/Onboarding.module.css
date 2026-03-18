@@ -1,0 +1,32 @@
+.onboardingPage{
+  min-height: calc(100vh - 100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(140deg, #0e1c2e 0%, #131f2b 45%, #121e36 100%);
+  color: #e8effd;
+  padding: 3rem 1.5rem;
+}
+
+.card{
+  width: min(720px, 100%);
+  background: rgba(10, 16, 32, 0.93);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.4);
+  padding: 2rem;
+}
+
+.card h1{ margin-bottom: 0.4rem; }
+.card p{ margin-bottom: 1.25rem; color: #b8c6e9; }
+
+.form{ display: grid; gap: 1rem; }
+label{ display: grid; gap: .5rem; font-weight: 600; color: #d5e1ff; }
+input, select{ background: rgba(255,255,255,0.08); color: #f4f8ff; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 0.75rem 0.85rem; }
+
+.roles{ display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.35rem 0 0.5rem; }
+.roleChip{ background: rgba(255,255,255,0.12); color: #d1e1ff; border: 1px solid rgba(255,255,255,0.18); border-radius: 10px; padding: 0.45rem 0.75rem; cursor: pointer; transition: all .2s ease; }
+.roleChip.active{ background: #3c61ff; border-color: #6f8bff; }
+
+.submitButton{ background: linear-gradient(105deg, #00b6ff, #8b7df7); border: none; color: #fff; padding: 0.85rem 1.4rem; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: .8rem; transition: transform .2s ease; }
+.submitButton:hover{ transform: translateY(-1px); }

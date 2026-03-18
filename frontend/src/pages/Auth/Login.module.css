@@ -1,0 +1,74 @@
+:root {
+  --bg: #0f172a;
+  --card: rgba(14, 23, 43, 0.8);
+  --text: #e2e8f0;
+  --accent: #60a5fa;
+}
+
+.loginPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0b1224 0%, #1a2f4f 100%);
+  padding: 2rem;
+}
+
+.loginCard {
+  max-width: 440px;
+  width: 100%;
+  padding: 2rem;
+  background: var(--card);
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: 1rem;
+  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.35);
+  color: var(--text);
+}
+
+.loginCard h1 {
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+}
+
+.loginCard p {
+  color: rgba(226, 232, 240, 0.8);
+  margin-bottom: 1.5rem;
+}
+
+.loginForm {
+  display: grid;
+  gap: 1rem;
+}
+
+.loginForm label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.loginForm input {
+  margin-top: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.65rem;
+  color: var(--text);
+}
+
+.loginForm button {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.65rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.loginForm button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(59, 130, 246, 0.45);
+}

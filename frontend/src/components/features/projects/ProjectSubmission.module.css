@@ -1,0 +1,8 @@
+.projectSubmission { margin-top: 1.4rem; background: rgba(13, 18, 37, 0.9); border: 1px solid rgba(70, 103, 178, 0.45); border-radius: 14px; padding: 1rem; }
+.projectSubmission h2 { margin: 0 0 0.8rem; }
+.projectSubmission form { display: grid; gap: 0.7rem; }
+.projectSubmission label { color: #c9d9f8; font-weight: 600; }
+.projectSubmission input, .projectSubmission textarea { width: 100%; padding: 0.6rem; background: rgba(28, 38, 62, 0.9); border: 1px solid rgba(82, 112, 190, 0.4); border-radius: 8px; color: #fff; }
+.projectSubmission textarea { min-height: 88px; resize: vertical; }
+.projectSubmission button { width: fit-content; border: none; background: linear-gradient(135deg,#1ca5ff,#48e9ff); color: #082d5f; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.success { padding: 0.8rem; color: #9ae1b7; background: rgba(14, 33, 47, 0.85); border-left: 4px solid #1de580; border-radius: 8px; }

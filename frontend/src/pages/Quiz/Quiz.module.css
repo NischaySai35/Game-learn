@@ -1,0 +1,13 @@
+.quizPage { padding: 2rem 1.2rem; max-width: 980px; margin: 0 auto; }
+.header { margin-bottom: 1.2rem; }
+.header h1 { margin: 0; font-size: 2rem; }
+.header p { color: #a1afc9; }
+.modeButtons { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
+.modeButtons button { border: 1px solid rgba(77, 121, 244, 0.35); background: rgba(29, 45, 84, 0.9); color: #d8e2ff; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; }
+.modeButtons .active { background: linear-gradient(135deg, #3f81ff, #72b6ff); color: #fff; border-color: #4ea0ff; }
+.answerGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+.answerGrid button { border: 1px solid rgba(80, 135, 255, 0.4); background: rgba(18, 30, 60, 0.96); color: #cbe4ff; padding: 0.7rem; border-radius: 8px; cursor: pointer; min-height: 45px; }
+.results { text-align: center; margin-top: 1rem; }
+.leaderboard { margin-top: 1rem; text-align: left; background: rgba(16, 26, 48, 0.95); padding: 0.75rem; border-radius: 10px; border: 1px solid rgba(72, 104, 185, 0.5); }
+.leaderRow { display: grid; grid-template-columns: 45px 1fr 70px; gap: 0.5rem; margin-bottom: 0.35rem; }
+.finishButton, .retryButton { margin-top: 1rem; border: none; background: linear-gradient(135deg, #4eb8ff, #1197ff); color: #fff; padding: 0.7rem 1.2rem; border-radius: 9px; cursor: pointer; }

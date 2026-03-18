@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useGame } from '../../context/GameContext'
 import styles from './Onboarding.module.css'
 
-const roleOptions = ['Backend', 'AI Engineer', 'Web Developer', 'Data Engineer', 'DevOps']
+const roleOptions = ['Student', 'Backend', 'AI Engineer', 'Web Developer', 'Data Engineer', 'DevOps']
 
 export default function Onboarding() {
   const { user, setOnboardingProfile } = useGame()

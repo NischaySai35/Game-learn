@@ -9,25 +9,6 @@
 
 ---
 
-## 🚀 Quick Start
-
-```bash
-# 1. Install all dependencies (creates MongoDB folder automatically)
-npm run install:all
-
-# 2. Start MongoDB in a new terminal
-mongod --dbpath ./mongodb-data
-
-# 3. Run the full application (backend + frontend)
-npm run dev
-```
-
-**Then open:** `http://localhost:5173`
-
-📖 **For detailed setup instructions**, see [SETUP.md](./SETUP.md)
-
----
-
 ## ✨ Features
 
 ### 🎨 **Gamification**

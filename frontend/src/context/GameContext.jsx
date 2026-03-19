@@ -310,8 +310,10 @@ export const GameProvider = ({ children }) => {
     })
   }, [addNotification, unlockAchievement])
 
-  const submitProject = useCallback((projectInfo) => {
+  const submitProject = useCallback(async (projectInfo) => {
     const userName = user?.name || 'Learner'
+    const certificateId = `CERT-${Date.now()}`
+
     const newProject = {
       id: Date.now(),
       ...projectInfo,
@@ -323,8 +325,33 @@ export const GameProvider = ({ children }) => {
       projects: [...prevUser.projects, newProject],
     }))
 
+    try {
+      // Generate PDF certificate on backend
+      const response = await fetch('/api/certificate/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userName: userName,
+          courseName: projectInfo.course,
+          projectName: projectInfo.projectName,
+          certificateId: certificateId
+        }),
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Certificate generated:', result.certificate)
+      } else {
+        console.error('Failed to generate certificate')
+      }
+    } catch (error) {
+      console.error('Error generating certificate:', error)
+    }
+
     const cert = {
-      id: `CERT-${Date.now()}`,
+      id: certificateId,
       name: userName,
       course: projectInfo.course,
       project: projectInfo.projectName,

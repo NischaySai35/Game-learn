@@ -5,15 +5,16 @@ exports.createCertificate = async (req, res) => {
 
   try {
 
-    const { userName, courseName } = req.body
+    const { userName, courseName, projectName, certificateId } = req.body
 
-    const filePath = `certificates/${userName}_${courseName}.pdf`
+    const filePath = `certificates/${userName}_${courseName.replace(/\s+/g, '_')}.pdf`
 
-    generateCertificate(userName, courseName, filePath)
+    generateCertificate(userName, courseName, projectName, certificateId, filePath)
 
     res.json({
-      message: "Certificate generated",
-      certificate: filePath
+      message: "Certificate generated successfully",
+      certificate: filePath,
+      certificateId: certificateId
     })
 
   } catch (error) {

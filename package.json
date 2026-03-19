@@ -1,1 +1,38 @@
-{"private":true,"scripts":{"dev":"cd frontend && npm run dev","build":"cd frontend && npm run build","preview":"cd frontend && npm run preview"},"dependencies":{"@google/genai":"^1.46.0"}}
+{
+  "name": "game-learn",
+  "version": "1.0.0",
+  "description": "Gamified Educational Learning Platform - Full Stack",
+  "private": true,
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "postinstall": "node scripts/setup.js",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm install",
+    "build:frontend": "cd frontend && npm run build",
+    "preview": "npm run preview:backend & npm run preview:frontend",
+    "preview:backend": "cd backend && npm start",
+    "preview:frontend": "cd frontend && npm run preview",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "test": "echo \"Testing setup if needed\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  },
+  "keywords": [
+    "gamification",
+    "education",
+    "react",
+    "express",
+    "mongodb",
+    "full-stack"
+  ],
+  "author": "Game-Learn Contributors",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

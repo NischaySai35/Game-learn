@@ -2,6 +2,35 @@
 
 Thank you for your interest in contributing to **Game-Learn**! We welcome contributions from the community that help improve this gamified educational learning platform. This document provides guidelines and instructions for contributing.
 
+## 🚀 Quick Start for New Contributors
+
+### **First Time? Just Run These 3 Commands!**
+
+```bash
+# 1. Clone the repo (you already have it)
+git clone <repo-url>
+cd Game-learn
+
+# 2. Install everything (MongoDB folder created automatically)
+npm run install:all
+
+# 3. Start developing
+npm run dev
+```
+
+**Done!** Open `http://localhost:5173` in your browser.
+
+> ✨ **That's it!** The setup script automatically creates:
+> - MongoDB data folder
+> - Log directories  
+> - Environment files (from templates)
+>
+> No manual folder creation needed!
+
+**For detailed instructions**, see [SETUP.md](./SETUP.md)
+
+---
+
 ## Table of Contents
 
 - [Code of Conduct](#code-of-conduct)

@@ -87,6 +87,12 @@ test-results/
 # pnpm-lock.yaml
 
 # ============================================
+# MongoDB Local Data (ignore but keep folder)
+# ============================================
+mongodb-data/
+!mongodb-data/.gitkeep
+
+# ============================================
 # Temporary Files
 # ============================================
 *.temp

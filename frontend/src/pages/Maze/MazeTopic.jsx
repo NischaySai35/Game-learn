@@ -105,7 +105,7 @@ export default function MazeTopic() {
 
     if (nextGoal && newPos.x === nextGoal.x && newPos.y === nextGoal.y) {
       setCurrentIndex(idx => idx + 1)
-      setFeedback(`Checkpoint reached: ${nextGoal.title}`)
+      setFeedback('Checkpoint reached! Keep going.')
       setAnswered(false)
     }
   }, [player, completed, mazeGrid, nextGoal, addCoins])
@@ -138,7 +138,7 @@ export default function MazeTopic() {
   const handleAnswer = (option) => {
     if (!currentNode || currentNode.type !== 'mcq' || answered) return
     if (option === currentNode.answer) {
-      setFeedback('Correct! Move to next node in maze.')
+      setFeedback('Correct! Keep going.')
       addXP(20)
       addCoins(5)
     } else {
@@ -178,7 +178,6 @@ export default function MazeTopic() {
 
         <aside className={styles.panel}>
           <h2>Current Node</h2>
-          <p className={styles.nodeType}>Type: {currentNode?.type}</p>
 
           {currentNode?.type === 'explanation' && <p>{currentNode.content}</p>}
 

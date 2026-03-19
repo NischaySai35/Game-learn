@@ -2,8 +2,8 @@ const Project = require("../models/Project")
 const CourseProgress = require("../models/CourseProgress")
 const User = require("../models/User")
 
-const { evaluateProject } = require("../services/ai/projectService")
-const calculateCoins = require("../utils/calculateCoins")
+const { evaluateProject } = require("../services/projectService")
+const calculateCoins = require("../utils/coinLogic")
 const logActivity = require("../utils/logActivity")
 
 // Submit Project

@@ -1,62 +1,55 @@
-const mongoose = require("mongoose")
+const CourseProgress = require("../models/CourseProgress")
 
-const progressSchema = new mongoose.Schema({
+// Get User's Progress in a Course
+exports.getProgress = async (req, res) => {
+  try {
+    const { userId, courseId } = req.params
+    
+    const progress = await CourseProgress.findOne({
+      userId,
+      courseId
+    })
 
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  },
-
-  courseId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Course"
-  },
-
-  // Topics
-  completedTopics: [String],
-
-  // Final Quiz
-  finalQuizCompleted: {
-    type: Boolean,
-    default: false
-  },
-
-  finalQuizScore: {
-    type: Number,
-    default: 0
-  },
-
-  // Project
-  projectSubmitted: {
-    type: Boolean,
-    default: false
-  },
-
-  projectStatus: {
-    type: String,
-    enum: ["pending", "approved", "rejected"],
-    default: "pending"
-  },
-
-  projectScore: {
-    type: Number,
-    default: 0
-  },
-
-  projectFeedback: String,
-
-  projectDetails: {
-    title: String,
-    githubLink: String,
-    deploymentLink: String
-  },
-
-  // Final Completion
-  isCompleted: {
-    type: Boolean,
-    default: false
+    if (progress) {
+      res.json(progress)
+    } else {
+      // Return default progress if not found
+      res.json({
+        userId,
+        courseId,
+        completedTopics: [],
+        quizzesCompleted: 0,
+        projectSubmitted: false,
+        progressPercentage: 0
+      })
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch progress" })
   }
+}
 
-}, { timestamps: true })
+// Update Topic Progress
+exports.updateTopicProgress = async (req, res) => {
+  try {
+    const { userId, courseId, topicId } = req.body
 
-module.exports = mongoose.model("CourseProgress", progressSchema)
+    let progress = await CourseProgress.findOne({ userId, courseId })
+
+    if (!progress) {
+      progress = new CourseProgress({
+        userId,
+        courseId,
+        completedTopics: [topicId]
+      })
+    } else {
+      if (!progress.completedTopics.includes(topicId)) {
+        progress.completedTopics.push(topicId)
+      }
+    }
+
+    await progress.save()
+    res.json(progress)
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update progress" })
+  }
+}

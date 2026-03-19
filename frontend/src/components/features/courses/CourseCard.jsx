@@ -31,6 +31,7 @@ export const CourseCard = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileTap={{ scale: 0.98 }}
+      onClick={onClick}
     >
       <div className={styles.header}>
         <div className={styles.iconContainer}>
@@ -43,34 +44,38 @@ export const CourseCard = ({
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.category}>{category}</p>
 
-        <div className={styles.stats}>
-          <span className={styles.stat}>📚 {completed}/{lessons} lessons</span>
-          <span className={styles.stat}>🎯 {progress}% complete</span>
-        </div>
+        {isAuthenticated && (
+          <>
+            <div className={styles.stats}>
+              <span className={styles.stat}>📚 {completed}/{lessons} lessons</span>
+              <span className={styles.stat}>🎯 {progress}% complete</span>
+            </div>
 
-        <ProgressBar
-          progress={progress}
-          variant="default"
-          animated
-          showLabel={false}
-          height="sm"
-        />
+            <ProgressBar
+              progress={progress}
+              variant="default"
+              animated
+              showLabel={false}
+              height="sm"
+            />
+          </>
+        )}
       </div>
 
-      <div className={styles.footer}>
-        <motion.button
-          className={styles.playButton}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onClick}
-        >
-          {!isAuthenticated
-            ? 'Login to Start'
-            : progress === 100
+      {isAuthenticated && (
+        <div className={styles.footer}>
+          <motion.button
+            className={styles.playButton}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onClick}
+          >
+            {progress === 100
               ? '✅ COMPLETED'
               : '▶ CONTINUE'}
-        </motion.button>
-      </div>
+          </motion.button>
+        </div>
+      )}
 
       <div className={styles.overlay} />
     </motion.div>

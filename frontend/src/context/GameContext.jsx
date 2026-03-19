@@ -54,11 +54,11 @@ const defaultUserState = {
 
 export const GameProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    return defaultUserState
+    return null
   })
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return true
+    return false
   })
 
   // Notifications

@@ -66,3 +66,28 @@ exports.getContentByRole = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+
+// Get by type
+exports.getContentByType = async (req, res) => {
+  try {
+    const { type } = req.params
+    const content = await Content.find({ type })
+    res.json(content)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+// Get by ID
+exports.getContentById = async (req, res) => {
+  try {
+    const { id } = req.params
+    const content = await Content.findById(id)
+    if (!content) {
+      return res.status(404).json({ message: "Content not found" })
+    }
+    res.json(content)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}

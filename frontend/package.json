@@ -1,26 +1,18 @@
 {
-  "name": "game-learn",
+  "name": "game-learn-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "echo \"ESLint setup if needed\""
   },
   "dependencies": {
     "axios": "^1.13.6",
-    "bcryptjs": "^3.0.3",
     "chart.js": "^4.5.1",
-    "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
-    "express": "^5.2.1",
     "framer-motion": "^10.18.0",
-    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.577.0",
-    "mongodb": "^7.1.0",
-    "mongoose": "^9.3.0",
-    "multer": "^2.1.1",
-    "pdfkit": "^0.18.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^18.2.0",
@@ -35,7 +27,7 @@
     "tailwindcss": "^4.2.1",
     "vite": "^5.4.21"
   },
-  "description": "Gamified Educational Learning Platform",
+  "description": "Gamified Educational Learning Platform - Frontend",
   "main": "index.js",
   "repository": {
     "type": "git",

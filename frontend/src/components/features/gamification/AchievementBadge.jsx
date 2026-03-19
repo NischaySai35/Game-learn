@@ -8,6 +8,7 @@ export const AchievementBadge = ({
   description,
   unlocked = false,
   onClick,
+  image,
 }) => {
   return (
     <motion.div
@@ -20,7 +21,11 @@ export const AchievementBadge = ({
       onClick={onClick}
     >
       <div className={styles.badgeIcon}>
-        <span className={styles.icon}>{icon}</span>
+        {image ? (
+          <img src={image} alt={name} className={styles.badgeImage} />
+        ) : (
+          <span className={styles.icon}>{icon}</span>
+        )}
         {unlocked && <div className={styles.unlockGlow} />}
       </div>
       <div className={styles.badgeInfo}>

@@ -23,21 +23,12 @@ export default function Profile() {
     )
   }
 
+  const achievements = Array.isArray(user.achievements) ? user.achievements : [];
   const stats = [
-    { icon: '🏅', label: 'Badge', value: user.badge || 'Starter' },
-    { icon: '🏆', label: 'Achievements', value: user.achievements.filter(a => a.unlocked).length },
-  ]
+    { icon: '🏆', label: 'Achievements', value: achievements.filter(a => a.unlocked).length }
+  ];
 
-  const combinedAchievements = [
-    {
-      id: 'badge',
-      icon: '🏅',
-      name: `${user.badge || 'Starter '} Badge`,
-      description: 'Current badge on your learning profile',
-      unlocked: true,
-    },
-    ...user.achievements,
-  ]
+  const combinedAchievements = achievements.map(a => ({ ...a, unlocked: false }));
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -138,7 +129,9 @@ export default function Profile() {
             variants={itemVariants}
             whileHover={{ y: -8 }}
           >
-            <div className={styles.statIcon}>{stat.icon}</div>
+            <div className={styles.statIcon}>
+              {stat.image ? <img src={stat.image} alt={stat.label} className={styles.statImage} /> : stat.icon}
+            </div>
             <div className={styles.statContent}>
               <span className={styles.statLabel}>{stat.label}</span>
               <span className={styles.statValue}>{stat.value}</span>
@@ -213,6 +206,7 @@ export default function Profile() {
                 name={achievement.name}
                 description={achievement.description}
                 unlocked={achievement.unlocked}
+                image={achievement.image}
                 onClick={() => setSelectedAchievement(achievement)}
               />
             </motion.div>

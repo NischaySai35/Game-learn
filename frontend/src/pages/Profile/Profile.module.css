@@ -135,6 +135,12 @@
   flex-shrink: 0;
 }
 
+.statImage {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
 .statContent {
   display: flex;
   flex-direction: column;

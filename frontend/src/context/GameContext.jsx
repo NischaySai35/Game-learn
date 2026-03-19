@@ -11,83 +11,55 @@ const roleCourseMap = {
   'Data Engineer': ['DBMS', 'Data Structures', 'Cloud Computing with AWS', 'Big Data Fundamentals', 'System Design'],
 }
 
+const defaultUserState = {
+  id: null,
+  name: 'New Learner',
+  email: '',
+  avatar: '🧑',
+  level: 1,
+  currentXP: 0,
+  totalXP: 0,
+  coins: 0,
+  streakDays: 0,
+  badge: '',
+  recentActivity: [],
+  dailyTargetMinutes: 60,
+  interestedRoles: [],
+  skills: [],
+  recommendedCourses: [],
+  completedCourses: [],
+  projects: [],
+  certificates: [],
+  dailyLearning: {
+    date: makeDateKey(),
+    minutes: 0,
+    goalMet: false,
+    recoveryTarget: 0,
+  },
+  streakState: {
+    current: 0,
+    paused: false,
+    missedGoalMinutes: 0,
+    recoveryRequiredMinutes: 0,
+    lastMissedDate: null,
+  },
+  achievements: [
+    { id: 1, name: 'Beginner', image: '/badges/beginner.png', unlocked: false },
+    { id: 2, name: 'Skilled', image: '/badges/skilled.png', unlocked: false },
+    { id: 3, name: 'Advanced', image: '/badges/advanced.png', unlocked: false },
+    { id: 4, name: 'Expert', image: '/badges/expert.png', unlocked: false },
+  ],
+  unlockedContent: [],
+}
+
 export const GameProvider = ({ children }) => {
-  // Authentication state (persist via localStorage)
   const [user, setUser] = useState(() => {
-    try {
-      const stored = localStorage.getItem('gamelearn_user')
-      return stored ? JSON.parse(stored) : null
-    } catch (error) {
-      console.error('Error parsing saved user from localStorage', error)
-      return null
-    }
+    return defaultUserState
   })
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    try {
-      return !!localStorage.getItem('gamelearn_user')
-    } catch (error) {
-      return false
-    }
+    return true
   })
-
-  useEffect(() => {
-    try {
-      if (isAuthenticated && user) {
-        localStorage.setItem('gamelearn_user', JSON.stringify(user))
-        localStorage.setItem('gamelearn_isAuthenticated', 'true')
-      } else {
-        localStorage.removeItem('gamelearn_user')
-        localStorage.removeItem('gamelearn_isAuthenticated')
-      }
-    } catch (error) {
-      console.error('Error updating localStorage', error)
-    }
-  }, [isAuthenticated, user])
-
-  const defaultUserState = {
-    id: null,
-    name: 'New Learner',
-    email: '',
-    avatar: '🧑',
-    level: 1,
-    currentXP: 0,
-    totalXP: 0,
-    coins: 0,
-    streakDays: 0,
-    badge: 'Starter',
-    recentActivity: [],
-    dailyTargetMinutes: 60,
-    interestedRoles: [],
-    skills: [],
-    recommendedCourses: [],
-    completedCourses: [],
-    projects: [],
-    certificates: [],
-    dailyLearning: {
-      date: makeDateKey(),
-      minutes: 0,
-      goalMet: false,
-      recoveryTarget: 0,
-    },
-    streakState: {
-      current: 0,
-      paused: false,
-      missedGoalMinutes: 0,
-      recoveryRequiredMinutes: 0,
-      lastMissedDate: null,
-    },
-    achievements: [
-      { id: 1, name: 'First Steps', icon: '🎯', unlocked: false },
-      { id: 2, name: 'Week Warrior', icon: '🔥', unlocked: false },
-      { id: 3, name: 'Course Master', icon: '👑', unlocked: false },
-      { id: 4, name: 'Quiz Champion', icon: '🏆', unlocked: false },
-      { id: 5, name: 'Night Owl', icon: '🦉', unlocked: false },
-      { id: 6, name: 'Social Butterfly', icon: '🦋', unlocked: false },
-      { id: 7, name: 'Helpful Hero', icon: '🦸', unlocked: false },
-    ],
-    unlockedContent: [],
-  }
 
   // Notifications
   const [notifications, setNotifications] = useState([])

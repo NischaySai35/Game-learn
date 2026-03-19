@@ -24,10 +24,19 @@ export default function Profile() {
   }
 
   const stats = [
-    { icon: '⭐', label: 'Total XP', value: user.totalXP.toLocaleString() },
-    { icon: '💎', label: 'Coins', value: user.coins },
+    { icon: '🏅', label: 'Badge', value: user.badge || 'Starter' },
     { icon: '🏆', label: 'Achievements', value: user.achievements.filter(a => a.unlocked).length },
-    { icon: '📈', label: 'Level', value: user.level },
+  ]
+
+  const combinedAchievements = [
+    {
+      id: 'badge',
+      icon: '🏅',
+      name: `${user.badge || 'Starter '} Badge`,
+      description: 'Current badge on your learning profile',
+      unlocked: true,
+    },
+    ...user.achievements,
   ]
 
   const containerVariants = {
@@ -183,7 +192,7 @@ export default function Profile() {
       >
         <h2 className={styles.sectionTitle}>🏅 Achievements</h2>
         <p className={styles.sectionSubtitle}>
-          {user.achievements.filter(a => a.unlocked).length} / {user.achievements.length} Unlocked
+          {combinedAchievements.filter(a => a.unlocked).length} / {combinedAchievements.length} Unlocked
         </p>
 
         <motion.div
@@ -193,7 +202,7 @@ export default function Profile() {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          {user.achievements.map((achievement, idx) => (
+          {combinedAchievements.map((achievement, idx) => (
             <motion.div
               key={achievement.id}
               variants={itemVariants}
@@ -220,28 +229,26 @@ export default function Profile() {
       >
         <h2 className={styles.sectionTitle}>📝 Recent Activity</h2>
         <div className={styles.activityList}>
-          {[
-            { icon: '🎓', text: 'Completed "React Fundamentals"', time: '2 hours ago' },
-            { icon: '🔥', text: 'Reached 7-day streak', time: '1 day ago' },
-            { icon: '🏆', text: 'Earned "Course Master" achievement', time: '3 days ago' },
-            { icon: '⭐', text: 'Gained 500 XP from quiz', time: '5 days ago' },
-            { icon: '💎', text: 'Earned 100 coins', time: '1 week ago' },
-          ].map((activity, idx) => (
-            <motion.div
-              key={idx}
-              className={styles.activityItem}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-            >
-              <span className={styles.activityIcon}>{activity.icon}</span>
-              <div className={styles.activityContent}>
-                <p className={styles.activityText}>{activity.text}</p>
-                <span className={styles.activityTime}>{activity.time}</span>
-              </div>
-            </motion.div>
-          ))}
+          {(!user.recentActivity || user.recentActivity.length === 0) ? (
+            <p className={styles.emptyState}>No activities yet. Complete your first lesson to unlock the feed.</p>
+          ) : (
+            user.recentActivity.map((activity, idx) => (
+              <motion.div
+                key={idx}
+                className={styles.activityItem}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+              >
+                <span className={styles.activityIcon}>{activity.icon}</span>
+                <div className={styles.activityContent}>
+                  <p className={styles.activityText}>{activity.text}</p>
+                  <span className={styles.activityTime}>{activity.time}</span>
+                </div>
+              </motion.div>
+            ))
+          )}
         </div>
       </motion.section>
     </div>

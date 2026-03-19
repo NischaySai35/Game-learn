@@ -15,6 +15,7 @@ export const CourseCard = ({
   lessons,
   completed,
   onClick,
+  isAuthenticated = false,
 }) => {
   const difficultyColor = {
     Beginner: '#39FF14',
@@ -63,7 +64,11 @@ export const CourseCard = ({
           whileTap={{ scale: 0.95 }}
           onClick={onClick}
         >
-          {progress === 100 ? '✅ COMPLETED' : `▶ CONTINUE`}
+          {!isAuthenticated
+            ? 'Login to Start'
+            : progress === 100
+              ? '✅ COMPLETED'
+              : '▶ CONTINUE'}
         </motion.button>
       </div>
 

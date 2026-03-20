@@ -35,7 +35,7 @@ const courseSchema = new mongoose.Schema({
     default: 0
   },
 
-  role: String,
+  role: [String],
 
   topics: [
     {

@@ -1,221 +1,203 @@
 import apiClient from './client'
 import { mockCourses, mockDailyChallenges, mockCourseTopics } from './mockData'
 
-// Use real API if backend is available, fallback to mock
 const USE_MOCK = import.meta.env.VITE_ENABLE_MOCK_API === 'true'
 
-// Simulate API delay for testing
 const delay = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms))
 
 /**
+ * ===============================
  * COURSES API
+ * ===============================
  */
 
+// Get all courses
 export const getCourses = async () => {
   if (USE_MOCK) {
-    await delay(400)
+    await delay(300)
     return { data: mockCourses }
   }
-  
+
   try {
     const response = await apiClient.get('/courses')
-    return response
+    return { data: response.data || [] }
   } catch (error) {
-    console.error('Error fetching courses:', error)
-    // Fallback to mock data
-    await delay(400)
+    console.error('Backend failed, using mock courses:', error)
+    await delay(300)
     return { data: mockCourses }
   }
 }
 
+
+// Get single course (MongoDB FIX)
 export const getCourseById = async (id) => {
   if (USE_MOCK) {
     await delay(300)
-    const course = mockCourses.find(c => c.id === parseInt(id))
+
+    const course = mockCourses.find(
+      c => String(c.id) === String(id)
+    )
+
     if (!course) throw new Error('Course not found')
+
     return { data: course }
   }
-  
+
   try {
     const response = await apiClient.get(`/courses/${id}`)
-    return response
+    return { data: response.data }
   } catch (error) {
-    console.error('Error fetching course:', error)
-    // Fallback to mock
+    console.error('Backend failed, using mock course:', error)
+
     await delay(300)
-    const course = mockCourses.find(c => c.id === parseInt(id))
+
+    const course = mockCourses.find(
+      c => String(c.id) === String(id)
+    )
+
     if (!course) throw new Error('Course not found')
+
     return { data: course }
   }
 }
 
-export const searchCourses = async (query) => {
+
+// Personalized courses (MAIN FEATURE)
+export const getPersonalizedCourses = async (userId) => {
   if (USE_MOCK) {
     await delay(300)
-    const results = mockCourses.filter(
-      c => c.title.toLowerCase().includes(query.toLowerCase()) ||
-           c.category.toLowerCase().includes(query.toLowerCase())
-    )
-    return { data: results }
+
+    return {
+      data: {
+        recommended: mockCourses.slice(0, 4),
+        explore: mockCourses.slice(4)
+      }
+    }
   }
-  
+
   try {
-    const response = await apiClient.get('/courses/search', { params: { q: query } })
-    return response
+    const response = await apiClient.get(`/courses/personalized/${userId}`)
+
+    return {
+      data: {
+        recommended: response.data.recommended || [],
+        explore: response.data.explore || []
+      }
+    }
+
   } catch (error) {
-    console.error('Error searching courses:', error)
-    // Fallback to mock
+    console.error('Error fetching personalized courses:', error)
+
     await delay(300)
-    const results = mockCourses.filter(
-      c => c.title.toLowerCase().includes(query.toLowerCase()) ||
-           c.category.toLowerCase().includes(query.toLowerCase())
-    )
-    return { data: results }
+
+    return {
+      data: {
+        recommended: [],
+        explore: mockCourses
+      }
+    }
   }
 }
 
-export const getCoursesByCategory = async (category) => {
-  if (USE_MOCK) {
-    await delay(300)
-    const courses = mockCourses.filter(c => c.category === category)
-    return { data: courses }
-  }
-  
-  try {
-    const response = await apiClient.get('/courses', { params: { category } })
-    return response
-  } catch (error) {
-    console.error('Error fetching courses by category:', error)
-    // Fallback to mock
-    await delay(300)
-    const courses = mockCourses.filter(c => c.category === category)
-    return { data: courses }
-  }
-}
 
-export const getCoursesProgress = async () => {
-  if (USE_MOCK) {
-    await delay(400)
-    const courseProgress = mockCourses.map(course => ({
-      id: course.id,
-      title: course.title,
-      progress: course.progress,
-      category: course.category,
-    }))
-    return { data: courseProgress }
-  }
-  
-  try {
-    const response = await apiClient.get('/progress')
-    return response
-  } catch (error) {
-    console.error('Error fetching course progress:', error)
-    // Fallback to mock
-    await delay(400)
-    const courseProgress = mockCourses.map(course => ({
-      id: course.id,
-      title: course.title,
-      progress: course.progress,
-      category: course.category,
-    }))
-    return { data: courseProgress }
-  }
-}
-
+// Get topics (MongoDB STRUCTURE FIX)
 export const getCourseTopics = async (courseId) => {
   if (USE_MOCK) {
     await delay(300)
-    const courseTopic = mockCourseTopics.find(entry => entry.courseId === Number(courseId))
-    if (!courseTopic) throw new Error('Course topics not found')
-    return { data: courseTopic }
+
+    const entry = mockCourseTopics.find(
+      c => String(c.courseId) === String(courseId)
+    )
+
+    if (!entry) throw new Error('Topics not found')
+
+    return { data: { topics: entry.topics } }
   }
-  
+
   try {
     const response = await apiClient.get(`/courses/${courseId}/topics`)
-    return response
+
+    return {
+      data: {
+        topics: response.data.topics || []
+      }
+    }
+
   } catch (error) {
-    console.error('Error fetching course topics:', error)
-    // Fallback to mock
+    console.error('Backend failed, using mock topics:', error)
+
     await delay(300)
-    const courseTopic = mockCourseTopics.find(entry => entry.courseId === Number(courseId))
-    if (!courseTopic) throw new Error('Course topics not found')
-    return { data: courseTopic }
+
+    const entry = mockCourseTopics.find(
+      c => String(c.courseId) === String(courseId)
+    )
+
+    if (!entry) throw new Error('Topics not found')
+
+    return { data: { topics: entry.topics } }
   }
 }
 
+
+// Get topic by ID
 export const getTopicById = async (courseId, topicId) => {
   if (USE_MOCK) {
     await delay(250)
-    const courseTopic = mockCourseTopics.find(entry => entry.courseId === Number(courseId))
-    if (!courseTopic) throw new Error('Course topics not found')
-    const topic = courseTopic.topics.find(t => t.id === topicId)
+
+    const entry = mockCourseTopics.find(
+      c => String(c.courseId) === String(courseId)
+    )
+
+    if (!entry) throw new Error('Course topics not found')
+
+    const topic = entry.topics.find(
+      (t, index) => String(index) === String(topicId)
+    )
+
     if (!topic) throw new Error('Topic not found')
+
     return { data: topic }
   }
-  
+
   try {
     const response = await apiClient.get(`/courses/${courseId}/topics/${topicId}`)
-    return response
+    return { data: response.data }
+
   } catch (error) {
-    console.error('Error fetching topic:', error)
-    // Fallback to mock
+    console.error('Backend failed, using mock topic:', error)
+
     await delay(250)
-    const courseTopic = mockCourseTopics.find(entry => entry.courseId === Number(courseId))
-    if (!courseTopic) throw new Error('Course topics not found')
-    const topic = courseTopic.topics.find(t => t.id === topicId)
+
+    const entry = mockCourseTopics.find(
+      c => String(c.courseId) === String(courseId)
+    )
+
+    if (!entry) throw new Error('Course topics not found')
+
+    const topic = entry.topics.find(
+      (t, index) => String(index) === String(topicId)
+    )
+
     if (!topic) throw new Error('Topic not found')
+
     return { data: topic }
   }
 }
 
+
+// Daily challenges
 export const getDailyChallenges = async () => {
   if (USE_MOCK) {
     await delay(300)
     return { data: mockDailyChallenges }
   }
-  
+
   try {
     const response = await apiClient.get('/courses/challenges/daily')
-    return response
+    return { data: response.data }
   } catch (error) {
-    console.error('Error fetching daily challenges:', error)
-    // Fallback to mock
+    console.error('Using mock daily challenges:', error)
     await delay(300)
     return { data: mockDailyChallenges }
   }
 }
-
-export const completeCourse = async (courseId) => {
-  if (USE_MOCK) {
-    await delay(500)
-    return { data: { success: true, xpGained: 500, coinsGained: 100 } }
-  }
-  
-  try {
-    const response = await apiClient.post(`/courses/${courseId}/complete`)
-    return response
-  } catch (error) {
-    console.error('Error completing course:', error)
-    // Fallback to mock
-    await delay(500)
-    return { data: { success: true, xpGained: 500, coinsGained: 100 } }
-  }
-}
-
-export const completeLesson = async (courseId, lessonId) => {
-  if (USE_MOCK) {
-    await delay(400)
-    return { data: { success: true, xpGained: 50, coinsGained: 10 } }
-  }
-  
-  try {
-    const response = await apiClient.post(`/courses/${courseId}/lessons/${lessonId}/complete`)
-    return response
-  } catch (error) {
-    console.error('Error completing lesson:', error)
-    // Fallback to mock
-    await delay(400)
-    return { data: { success: true, xpGained: 50, coinsGained: 10 } }
-  }
-}
-

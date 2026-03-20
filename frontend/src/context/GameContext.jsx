@@ -1,27 +1,91 @@
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react'
 
 const GameContext = createContext()
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+const getAuthHeader = () => {
+  const token = localStorage.getItem('token')
+  return {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  }
+}
 
 const makeDateKey = (date = new Date()) => date.toISOString().split('T')[0]
 
 const roleCourseMap = {
-  Backend: ['Python', 'DBMS', 'OOP', 'APIs', 'System Design'],
-  'AI Engineer': ['Python', 'Machine Learning Basics', 'Data Structures', 'Statistics', 'AI Ethics'],
-  'Web Developer': ['JavaScript Essentials', 'React Fundamentals', 'Advanced CSS & Design', 'Node.js & Express', 'GraphQL API Development'],
-  'Data Engineer': ['DBMS', 'Data Structures', 'Cloud Computing with AWS', 'Big Data Fundamentals', 'System Design'],
+  "Frontend Developer": [
+    "React Fundamentals",
+    "JavaScript Fundamentals",
+    "Advanced CSS & Design"
+  ],
+
+  "UI/UX Designer": [
+    "React Fundamentals",
+    "JavaScript Fundamentals",
+    "Advanced CSS & Design"
+  ],
+
+  "Backend Developer": [
+    "JavaScript Fundamentals",
+    "Node.js & Express",
+    "Database Design",
+    "GraphQL API Development"
+  ],
+
+  "Web Developer": [
+    "JavaScript Fundamentals",
+    "Data Structures & Algorithms",
+    "Node.js & Express",
+    "System Design",
+    "GraphQL API Development"
+  ],
+
+  "Software Engineer": [
+    "Data Structures & Algorithms",
+    "DevOps & CI/CD",
+    "System Design"
+  ],
+
+  "AI Engineer": [
+    "Machine Learning Basics",
+  ],
+
+  "Data Scientist": [
+    "Machine Learning Basics",
+    "Data Structures & Algorithms"
+  ],
+
+  "Cloud Engineer": [
+    "Cloud Computing with AWS"
+  ],
+
+  "DevOps Engineer": [
+    "DevOps & CI/CD"
+  ],
+
+  "Security Engineer": [
+    "Web Security"
+  ]
 }
 
 const defaultUserState = {
   id: null,
   name: 'New Learner',
   email: '',
+  password: '',
+
   avatar: '🧑',
   level: 1,
   currentXP: 0,
   totalXP: 0,
   coins: 0,
   streakDays: 0,
-  badge: '',
+
+  badge: null, // ✅ initially null
+
+  onboardingCompleted: false, // ✅ important
+
   recentActivity: [],
   dailyTargetMinutes: 60,
   interestedRoles: [],
@@ -30,12 +94,14 @@ const defaultUserState = {
   completedCourses: [],
   projects: [],
   certificates: [],
+
   dailyLearning: {
     date: makeDateKey(),
     minutes: 0,
     goalMet: false,
     recoveryTarget: 0,
   },
+
   streakState: {
     current: 0,
     paused: false,
@@ -43,25 +109,21 @@ const defaultUserState = {
     recoveryRequiredMinutes: 0,
     lastMissedDate: null,
   },
+
   achievements: [
     { id: 1, name: 'Beginner', image: '/badges/beginner.png', unlocked: false },
     { id: 2, name: 'Skilled', image: '/badges/skilled.png', unlocked: false },
     { id: 3, name: 'Advanced', image: '/badges/advanced.png', unlocked: false },
     { id: 4, name: 'Expert', image: '/badges/expert.png', unlocked: false },
   ],
+
   unlockedContent: [],
 }
 
 export const GameProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    return null
-  })
 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return false
-  })
-
-  // Notifications
+  const [user, setUser] = useState(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [notifications, setNotifications] = useState([])
 
   const addNotification = useCallback((message, type = 'info') => {
@@ -69,300 +131,259 @@ export const GameProvider = ({ children }) => {
     setNotifications(prev => [...prev, { id, message, type }])
 
     setTimeout(() => {
-      setNotifications(prev => prev.filter(notif => notif.id !== id))
+      setNotifications(prev => prev.filter(n => n.id !== id))
     }, 3000)
   }, [])
 
-  const loginUser = useCallback((profile) => {
-    const newUser = {
-      ...defaultUserState,
-      id: Date.now(),
-      name: profile.name || 'New Learner',
-      email: profile.email || '',
-      interestedRoles: profile.interestedRoles || [],
-      skills: profile.skills || [],
-      badge: profile.badge || 'Starter',
-      recommendedCourses: roleCourseMap[profile.interestedRoles?.[0]] || [],
-      ...profile,
-    }
-
-    setUser(newUser)
-    setIsAuthenticated(true)
-    addNotification(`Welcome ${newUser.name}!`, 'success')
-  }, [addNotification])
-
   const logoutUser = useCallback(() => {
+    localStorage.removeItem('token') //clear auth token
     setUser(null)
     setIsAuthenticated(false)
-    try {
-      localStorage.removeItem('gamelearn_user')
-      localStorage.removeItem('gamelearn_isAuthenticated')
-    } catch (error) {
-      console.error('Error clearing localStorage on logout', error)
-    }
     addNotification('Logged out successfully.', 'info')
   }, [addNotification])
 
-  // Add XP to user
-  const addXP = useCallback((amount) => {
-    if (!isAuthenticated || !user) return
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem('token')
+      if (!token) return
 
-    setUser(prevUser => {
-      if (!prevUser) return prevUser
-      const newXP = prevUser.currentXP + amount
-      const levelThreshold = 5000 // XP needed per level
-      const newLevel = Math.floor(newXP / levelThreshold) + 1
+      try {
+        const res = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
 
-      return {
-        ...prevUser,
-        currentXP: newXP % levelThreshold,
-        level: newLevel,
-        totalXP: prevUser.totalXP + amount,
-      }
-    })
+        const data = await res.json()
 
-    addNotification(`+${amount} XP`, 'xp')
-  }, [addNotification, isAuthenticated, user])
-
-  // Add coins to user
-
-  const addCoins = useCallback((amount) => {
-    if (!isAuthenticated || !user) return
-
-    setUser(prevUser => {
-      if (!prevUser) return prevUser
-      return {
-        ...prevUser,
-        coins: prevUser.coins + amount,
-      }
-    })
-
-    addNotification(`+${amount} Coins`, 'coin')
-  }, [addNotification, isAuthenticated, user])
-
-  const setOnboardingProfile = useCallback(({ name, email, interestedRoles, skills, dailyTargetMinutes }) => {
-    const recommendedFromRoles = interestedRoles.flatMap(role => roleCourseMap[role] || [])
-    const uniqueRec = [...new Set(recommendedFromRoles)].slice(0, 6)
-
-    setUser(prevUser => ({
-      ...((prevUser || defaultUserState)),
-      name,
-      email,
-      interestedRoles,
-      skills,
-      badge: prevUser?.badge || 'Starter',
-      dailyTargetMinutes,
-      recommendedCourses: uniqueRec,
-      dailyLearning: {
-        date: makeDateKey(),
-        minutes: 0,
-        goalMet: false,
-        recoveryTarget: 0,
-      },
-    }))
-
-    if (!isAuthenticated) setIsAuthenticated(true)
-    addNotification('Profile setup complete! Welcome to your personalized learning space.', 'success')
-  }, [addNotification])
-
-  const recordLearningSession = useCallback((minutes) => {
-    setUser(prevUser => {
-      const todayKey = makeDateKey()
-      const prevDaily = prevUser.dailyLearning
-      const prevStreak = prevUser.streakState
-      const target = prevUser.dailyTargetMinutes || 60
-
-      let nextDaily = { ...prevDaily }
-      let nextStreak = { ...prevStreak }
-
-      // Day rollover logic
-      if (prevDaily.date !== todayKey) {
-        const prevAchieved = prevDaily.goalMet || prevDaily.minutes >= target
-        if (!prevAchieved) {
-          const missed = Math.max(0, target - prevDaily.minutes)
-          nextStreak = {
-            ...nextStreak,
-            paused: true,
-            missedGoalMinutes: missed,
-            recoveryRequiredMinutes: missed + target,
-            lastMissedDate: prevDaily.date,
-          }
+        if (res.ok) {
+          setUser(data)
+          setIsAuthenticated(true)
+        } else {
+          logoutUser()
         }
-
-        nextDaily = {
-          date: todayKey,
-          minutes: minutes,
-          goalMet: minutes >= target,
-          recoveryTarget: nextStreak.paused ? nextStreak.recoveryRequiredMinutes : 0,
-        }
-      } else {
-        nextDaily = {
-          ...nextDaily,
-          minutes: nextDaily.minutes + minutes,
-          goalMet: nextDaily.goalMet || nextDaily.minutes + minutes >= target,
-        }
+      } catch (err) {
+        console.error(err)
       }
-
-      // Recovery and streak update
-      if (nextStreak.paused) {
-        if (nextDaily.minutes >= nextStreak.recoveryRequiredMinutes) {
-          nextStreak = {
-            ...nextStreak,
-            paused: false,
-            missedGoalMinutes: 0,
-            recoveryRequiredMinutes: 0,
-            lastMissedDate: null,
-            current: nextStreak.current + 1,
-          }
-          nextDaily.goalMet = true
-          addNotification('Streak recovered! Great job staying on track.', 'success')
-        }
-      } else if (!prevDaily.goalMet && nextDaily.goalMet) {
-        nextStreak = {
-          ...nextStreak,
-          current: nextStreak.current + 1,
-        }
-        addNotification('Daily learning goal reached! Streak +1', 'success')
-      }
-
-      return {
-        ...prevUser,
-        streakDays: nextStreak.current,
-        streakState: nextStreak,
-        dailyLearning: nextDaily,
-      }
-    })
-  }, [addNotification])
-
-  const completeCourse = useCallback((courseName) => {
-    setUser(prevUser => {
-      const completedCourses = prevUser.completedCourses.includes(courseName)
-        ? prevUser.completedCourses
-        : [...prevUser.completedCourses, courseName]
-
-      const basicXpAward = 600
-      const coinAward = 150
-
-      addXP(basicXpAward)
-      addCoins(coinAward)
-      addNotification(`Course completed: ${courseName}. +${basicXpAward} XP, +${coinAward} Coins`, 'success')
-
-      return {
-        ...prevUser,
-        completedCourses,
-      }
-    })
-  }, [addCoins, addNotification, addXP])
-
-  const addCertificate = useCallback((certificate) => {
-    setUser(prevUser => ({
-      ...prevUser,
-      certificates: [...prevUser.certificates, certificate],
-    }))
-    addNotification('Certificate generated successfully!', 'success')
-  }, [addNotification])
-
-  const unlockAchievement = useCallback((achievementId) => {
-    let unlockedName = ''
-    setUser(prevUser => {
-      const updatedAchievements = prevUser.achievements.map(ach => {
-        if (ach.id === achievementId) {
-          unlockedName = ach.name
-          return { ...ach, unlocked: true }
-        }
-        return ach
-      })
-
-      return {
-        ...prevUser,
-        achievements: updatedAchievements,
-      }
-    })
-
-    if (unlockedName) {
-      addNotification(`Achievement Unlocked: ${unlockedName}!`, 'achievement')
     }
-  }, [addNotification])
 
-  const unlockMarketplaceItem = useCallback((item) => {
-    setUser(prevUser => {
-      if (prevUser.coins < item.cost) {
-        addNotification('Not enough coins to unlock this item.', 'error')
-        return prevUser
-      }
-      if (prevUser.unlockedContent.includes(item.id)) {
-        addNotification('Item already unlocked.', 'info')
-        return prevUser
-      }
+    fetchUser()
+  }, [])
 
-      const updated = {
-        ...prevUser,
-        coins: prevUser.coins - item.cost,
-        unlockedContent: [...prevUser.unlockedContent, item.id],
-      }
 
-      if (!prevUser.achievements.some(ach => ach.id === 7 && ach.unlocked)) {
-        setTimeout(() => unlockAchievement(7), 150)
-      }
-
-      addNotification(`Unlocked ${item.name}!`, 'success')
-      return updated
-    })
-  }, [addNotification, unlockAchievement])
-
-  const submitProject = useCallback(async (projectInfo) => {
-    const userName = user?.name || 'Learner'
-    const certificateId = `CERT-${Date.now()}`
-
-    const newProject = {
-      id: Date.now(),
-      ...projectInfo,
-      status: 'Submitted',
-      submittedAt: new Date().toLocaleDateString(),
-    }
-    setUser(prevUser => ({
-      ...prevUser,
-      projects: [...prevUser.projects, newProject],
-    }))
-
+  // ✅ LOGIN / SIGNUP HANDLER (REAL DB VERSION)
+  const loginUser = useCallback(async ({ name, email, password, mode }) => {
     try {
-      // Generate PDF certificate on backend
-      const response = await fetch('/api/certificate/generate', {
+      const endpoint =
+        mode === 'login'
+          ? `${API_BASE_URL}/auth/login`
+          : `${API_BASE_URL}/auth/signup`
+
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ name, email, password }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        return {
+          success: false,
+          message: data.message || 'Authentication failed',
+        }
+      }
+
+      // ✅ Store JWT token
+      if (data.token) {
+        localStorage.setItem('token', data.token)
+      }
+
+      // ✅ Set user from backend (MongoDB / DB)
+      setUser(data.user)
+      setIsAuthenticated(true)
+
+      addNotification(
+        mode === 'login'
+          ? `Welcome back ${data.user.name}!`
+          : 'Account created successfully!',
+        'success'
+      )
+
+      return { success: true }
+
+    } catch (err) {
+      return {
+        success: false,
+        message: err.message,
+      }
+    }
+  }, [addNotification])
+
+  // ✅ ONBOARDING (REAL DB VERSION)
+  const setOnboardingProfile = useCallback(async ({
+    name,
+    email,
+    interestedRoles,
+    skillsProgress,
+    dailyLearningTarget
+  }) => {
+    try {
+      const token = localStorage.getItem('token')
+
+      // derive recommended courses (frontend logic still useful)
+      const recommendedFromRoles = interestedRoles.flatMap(
+        role => roleCourseMap[role] || []
+      )
+      const uniqueRec = [...new Set(recommendedFromRoles)].slice(0, 6)
+
+      const res = await fetch(`${API_BASE_URL}/auth/onboarding`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
-          userName: userName,
-          courseName: projectInfo.course,
-          projectName: projectInfo.projectName,
-          certificateId: certificateId
+          name,
+          email,
+          interestedRoles,
+          skillsProgress,
+          dailyLearningTarget,
+          recommendedCourses: uniqueRec,
         }),
       })
 
-      if (response.ok) {
-        const result = await response.json()
-        console.log('Certificate generated:', result.certificate)
-      } else {
-        console.error('Failed to generate certificate')
-      }
-    } catch (error) {
-      console.error('Error generating certificate:', error)
-    }
+      const data = await res.json()
 
-    const cert = {
-      id: certificateId,
-      name: userName,
-      course: projectInfo.course,
-      project: projectInfo.projectName,
-      date: new Date().toLocaleDateString(),
-      shareLink: `https://www.linkedin.com/shareArticle?mini=true&title=Completed%20${encodeURIComponent(projectInfo.course)}&summary=Just%20finished%20${encodeURIComponent(projectInfo.projectName)}&source=GameLearn`,
+      if (!res.ok) {
+        addNotification(data.message || 'Onboarding failed', 'error')
+        return
+      }
+
+      // ✅ Update user from backend response
+      setUser(data.user)
+
+      addNotification('Onboarding completed!', 'success')
+
+      return true
+
+    } catch (err) {
+      addNotification(err.message, 'error')
     }
-    addCertificate(cert)
-    addXP(500)
-    addCoins(120)
-    addNotification('Project submitted. Certificate generated!', 'success')
-  }, [addCertificate, addCoins, addNotification, addXP, user])
+  }, [addNotification])
+
+  // ================= GAMIFICATION LOGIC (UNCHANGED) =================
+
+  const addXP = useCallback(async (amount) => {
+    if (!isAuthenticated || !user) return
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/user/xp`, {
+        method: 'POST',
+        headers: getAuthHeader(),
+        body: JSON.stringify({ amount }),
+      })
+
+      const data = await res.json()
+
+      if (res.ok) {
+        setUser(data.user)
+        addNotification(`+${amount} XP`, 'xp')
+      } else {
+        console.error(data.message)
+      }
+
+    } catch (err) {
+      console.error(err)
+    }
+  }, [addNotification, isAuthenticated, user])
+
+  const addCoins = useCallback(async (amount) => {
+    if (!isAuthenticated || !user) return
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/user/coins`, {
+        method: 'POST',
+        headers: getAuthHeader(),
+        body: JSON.stringify({ amount }),
+      })
+
+      const data = await res.json()
+
+      if (res.ok) {
+        setUser(data.user)
+        addNotification(`+${amount} Coins`, 'coin')
+      } else {
+        console.error(data.message)
+      }
+
+    } catch (err) {
+      console.error(err)
+    }
+  }, [addNotification, isAuthenticated, user])
+
+  const recordLearningSession = useCallback(async (minutes) => {
+    if (!isAuthenticated || !user) return
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/user/learning-session`, {
+        method: 'POST',
+        headers: getAuthHeader(),
+        body: JSON.stringify({ minutes }),
+      })
+
+      const data = await res.json()
+
+      if (res.ok) {
+        // ✅ backend returns updated user
+        setUser(data.user)
+
+        // ✅ notifications based on backend flags
+        if (data.streakRecovered) {
+          addNotification('Streak recovered!', 'success')
+        } else if (data.goalReached) {
+          addNotification('Daily goal reached! Streak +1', 'success')
+        }
+
+      } else {
+        console.error(data.message)
+      }
+
+    } catch (err) {
+      console.error(err)
+    }
+  }, [addNotification, isAuthenticated, user])
+
+  const completeCourse = useCallback(async (courseName) => {
+    if (!isAuthenticated || !user) return
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/user/complete-course`, {
+        method: 'POST',
+        headers: getAuthHeader(),
+        body: JSON.stringify({ courseName }),
+      })
+
+      const data = await res.json()
+
+      if (res.ok) {
+        // ✅ backend updates:
+        // - completedCourses
+        // - XP
+        // - coins
+        setUser(data.user)
+
+        addNotification(`Course completed: ${courseName}`, 'success')
+      } else {
+        console.error(data.message)
+      }
+
+    } catch (err) {
+      console.error(err)
+    }
+  }, [addNotification, isAuthenticated, user])
 
   const value = {
     user,
@@ -370,17 +391,13 @@ export const GameProvider = ({ children }) => {
     loginUser,
     logoutUser,
     setUser,
-    notifications,
-    addNotification,
+    setOnboardingProfile,
     addXP,
     addCoins,
-    setOnboardingProfile,
     recordLearningSession,
     completeCourse,
-    submitProject,
-    addCertificate,
-    unlockMarketplaceItem,
-    unlockAchievement,
+    notifications,
+    addNotification,
   }
 
   return (

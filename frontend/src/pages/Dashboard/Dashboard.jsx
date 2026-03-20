@@ -15,7 +15,10 @@ export default function Dashboard() {
   const [sortBy, setSortBy] = useState('totalXP')
   const [loading, setLoading] = useState(true)
 
-  const hasStartedLearning = user.totalXP > 0 || user.currentXP > 0 || user.dailyLearning?.minutes > 0
+  const hasStartedLearning =
+  (user?.totalXP ?? 0) > 0 ||
+  (user?.currentXP ?? 0) > 0 ||
+  (user?.dailyLearning?.minutes ?? 0) > 0
 
   useEffect(() => {
     const fetchData = async () => {

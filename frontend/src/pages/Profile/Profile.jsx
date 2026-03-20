@@ -86,7 +86,7 @@ export default function Profile() {
             <h1 className={styles.userName}>{user.name}</h1>
             <div className={styles.userStats}>
               <Badge variant="primary" icon="⭐">
-                {user.totalXP.toLocaleString()} XP
+                {user.totalXP?.toLocaleString()} XP
               </Badge>
               <Badge variant="warning" icon="💎">
                 {user.coins} Coins

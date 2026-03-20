@@ -15,10 +15,11 @@ import Login from './pages/Auth/Login'
 import './App.module.css'
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useGame()
+  const { user, isAuthenticated } = useGame()
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
   }
+  
   return children
 }
 

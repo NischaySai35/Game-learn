@@ -67,9 +67,14 @@ const userSchema = new mongoose.Schema({
     default: 1
   },
 
+  hasCompletedOnboarding: {
+    type: Boolean,
+    default: false
+  },
+
   badge: {
     type: String,
-    default: "Starter"
+    default: "Null"
   }
 
 }, { timestamps: true })

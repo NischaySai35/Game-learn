@@ -57,9 +57,13 @@ connectDB();
 
 const seedCourses = async () => {
   try {
+    console.log("Checking course count...");
+
     const count = await Course.countDocuments();
+    console.log("Course count:", count);
 
     if (count === 0) {
+      console.log("Seeding courses...");
       await Course.insertMany(coursesData);
       console.log("Courses inserted automatically");
     } else {
@@ -174,7 +178,7 @@ mongoose.connection.once("open", async () => {
     console.log(`✓ Environment: ${NODE_ENV}`);
     console.log(`✓ MongoDB: ${process.env.MONGO_URI || 'mongodb://localhost:27017/gamelearn'}`);
     console.log(`✓ CORS Origins: ${allowedOrigins.join(', ')}`);
-    console.log(`\n🚀 Backend ready at http://localhost:${PORT}`);
+    console.log(`\nBackend ready at http://localhost:${PORT}`);
   });
 
   // Graceful shutdown

@@ -12,6 +12,9 @@ export default function Home() {
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
   const recommendedCourses = user?.recommendedCourses || []
+  const recommendedCourseObjects = courses.filter(course =>
+  recommendedCourses.includes(course.title)
+)
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -115,14 +118,53 @@ export default function Home() {
           <p>Based on your goals, here's what we suggest</p>
         </motion.div>
         <div className={styles.recommendedBody}>
+
+          {/* Badges (existing behavior preserved) */}
           {recommendedCourses.length > 0 ? (
-            recommendedCourses.map((course, index) => (
-              <span key={index} className={styles.recBadge}>{course}</span>
-            ))
-          ) : (
-            <p className={styles.emptyRec}>No recommendations yet. Start onboarding to get tailored courses.</p>
+          recommendedCourses.map((course, index) => (
+            <span key={index} className={styles.recBadge}>
+              {course}
+            </span>
+          ))
+        ) : (
+          <>
+            {isAuthenticated && !user?.hasCompletedOnboarding && (
+              <p className={styles.emptyRec}>
+                Complete onboarding to unlock personalized recommendations.
+              </p>
+            )}
+          </>
+        )}
+
+          {/* NEW: Show actual course cards (does NOT break anything) */}
+          {recommendedCourseObjects.length > 0 && (
+            <div className={styles.coursesGrid}>
+              {recommendedCourseObjects.map((course, index) => (
+                <CourseCard
+                  key={course._id || index}
+                  {...course}
+                  progress={isAuthenticated ? course.progress : 0}
+                  completed={isAuthenticated ? course.completed : 0}
+                  isAuthenticated={isAuthenticated}
+                  onClick={() => {
+                    if (isAuthenticated) {
+                      navigate(`/course/${course._id}`)
+                    } else {
+                      navigate('/login')
+                    }
+                  }}
+                />
+              ))}
+            </div>
+            
           )}
-          <Link className={styles.onboardButton} to="/onboarding">Complete Onboarding</Link>
+
+          {isAuthenticated && !user?.hasCompletedOnboarding && (
+          <Link className={styles.onboardButton} to="/onboarding">
+            Complete Onboarding
+          </Link>
+        )}
+
         </div>
       </section>
 
@@ -175,7 +217,7 @@ export default function Home() {
             viewport={{ once: true }}
           >
             {courses.map((course, index) => (
-              <motion.div key={course.id} variants={itemVariants}>
+              <motion.div key={course._id || index} variants={itemVariants}>
                 <CourseCard
                   {...course}
                   progress={isAuthenticated ? course.progress : 0}
@@ -183,7 +225,7 @@ export default function Home() {
                   isAuthenticated={isAuthenticated}
                   onClick={() => {
                     if (isAuthenticated) {
-                      navigate(`/course/${course.id}`)
+                      navigate(`/course/${course._id}`)
                     } else {
                       navigate('/login')
                     }

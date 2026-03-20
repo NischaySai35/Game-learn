@@ -24,12 +24,24 @@ export default function Profile() {
     )
   }
 
-  const achievements = Array.isArray(user.achievements) ? user.achievements : [];
+  const DEFAULT_ACHIEVEMENTS = [
+    { id: 1, name: 'Beginner', description: 'Complete 1 course', icon: '🌱', image: '/badges/beginner.png', threshold: 1 },
+    { id: 2, name: 'Skilled', description: 'Complete 3 courses', icon: '🚀', image: '/badges/skilled.png', threshold: 3 },
+    { id: 3, name: 'Advanced', description: 'Complete 5 courses', icon: '💎', image: '/badges/advanced.png', threshold: 5 },
+    { id: 4, name: 'Expert', description: 'Complete 8 courses', icon: '🔥', image: '/badges/expert.png', threshold: 8 },
+  ];
+
+  const certificateCount = user.certificates?.length || 0;
+  const achievements = DEFAULT_ACHIEVEMENTS.map(ach => ({
+    ...ach,
+    unlocked: certificateCount >= ach.threshold
+  }));
+
   const stats = [
     { icon: '🏆', label: 'Achievements', value: achievements.filter(a => a.unlocked).length }
   ];
 
-  const combinedAchievements = achievements.map(a => ({ ...a, unlocked: false }));
+  const combinedAchievements = achievements;
 
   const containerVariants = {
     hidden: { opacity: 0 },

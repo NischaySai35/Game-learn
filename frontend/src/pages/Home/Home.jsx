@@ -259,7 +259,7 @@ export default function Home() {
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          <h2>⭐ Why GameLearn?</h2>
+          <h2>⭐ Why FunLearn?</h2>
           <p>Gamification features that make learning engaging</p>
         </motion.div>
 

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGame } from '../context/GameContext'
 import styles from './Header.module.css'
+import logo from '../assets/logo.png'
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -41,8 +42,8 @@ export const Header = () => {
         >
           {/* Logo */}
           <Link to="/" className={styles.logo}>
-            <span className={styles.logoIcon}>🎮</span>
-            <span className={styles.logoText}>GameLearn</span>
+            <img src={logo} alt="FunLearn Logo" className={styles.logoImage} />
+            <span className={styles.logoText}>FunLearn</span>
           </Link>
 
           {/* Desktop Navigation */}

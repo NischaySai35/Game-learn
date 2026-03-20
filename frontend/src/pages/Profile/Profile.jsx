@@ -71,7 +71,15 @@ export default function Profile() {
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity }}
             >
-              {user.avatar ? user.avatar : '🧑'}
+              {user.avatar && !user.avatar.includes('http') && !user.avatar.startsWith('/') ? (
+                 user.avatar
+              ) : (
+                <img 
+                  src={user.avatar || "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Smiling%20Eyes.png"} 
+                  alt="Avatar" 
+                  className={styles.avatarImage} 
+                />
+              )}
             </motion.div>
             <motion.div
               className={styles.levelBadge}

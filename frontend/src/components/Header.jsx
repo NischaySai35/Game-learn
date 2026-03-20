@@ -62,7 +62,17 @@ export const Header = () => {
 
           {isAuthenticated && user ? (
             <div className={styles.userStatus}>
-              <span className={styles.avatar}>{user.avatar}</span>
+              <span className={styles.avatar}>
+                {user.avatar && !user.avatar.includes('http') && !user.avatar.startsWith('/') ? (
+                  user.avatar
+                ) : (
+                  <img 
+                    src={user.avatar || "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Smiling%20Eyes.png"} 
+                    alt="Avatar" 
+                    className={styles.avatarImage} 
+                  />
+                )}
+              </span>
               <span className={styles.userName}>{user.name}</span>
               <button className={styles.logoutButton} type="button" onClick={() => { logoutUser(); navigate('/') }}>
                 Logout

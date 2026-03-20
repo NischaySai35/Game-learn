@@ -5,7 +5,8 @@ const {
   getCourses,
   createCourse,
   getCourseById,
-  getCourseTopics, 
+  getCourseTopics,
+  getTopicById,
   getPersonalizedCourses
 } = require("../controllers/courseController");
 
@@ -18,6 +19,9 @@ router.get("/personalized/:userId", getPersonalizedCourses);
 
 // GET course topics
 router.get("/:id/topics", getCourseTopics);
+
+// GET single topic by ID
+router.get("/:id/topics/:topicId", getTopicById);
 
 // GET single course
 router.get("/:id", getCourseById);

@@ -75,6 +75,11 @@ const userSchema = new mongoose.Schema({
   badge: {
     type: String,
     default: "Null"
+  },
+
+  isGuest: {
+    type: Boolean,
+    default: false
   }
 
 }, { timestamps: true })

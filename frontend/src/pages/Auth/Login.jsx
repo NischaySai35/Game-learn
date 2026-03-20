@@ -5,7 +5,7 @@ import { useGame } from '../../context/GameContext'
 import styles from './Login.module.css'
 
 export default function Login() {
-  const { loginUser, isAuthenticated, user } = useGame()
+  const { loginUser, loginAsGuest, isAuthenticated, user } = useGame()
   const navigate = useNavigate()
 
   const [mode, setMode] = useState('login') // 'login' | 'signup'
@@ -15,22 +15,28 @@ export default function Login() {
   const [password, setPassword] = useState('')
 
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setLoading(true)
 
     const result = await loginUser({
       name: name.trim(),
       email: email.trim(),
       password: password.trim(),
-      mode, // important to differentiate login/signup in backend
+      mode,
     })
+
+    setLoading(false)
 
     // ❌ USER NOT FOUND OR LOGIN FAILED
     if (!result?.success) {
       setError(result?.message || 'User not found. Please create an account.')
-      setMode('signup')
+      if (mode === 'login') {
+        setMode('signup')
+      }
       return
     }
 
@@ -38,12 +44,29 @@ export default function Login() {
     if (mode === 'signup') {
       navigate('/onboarding')
     } else {
-      if (user?.onboardingCompleted) {
+      if (user?.onboardingCompleted || user?.hasCompletedOnboarding) {
         navigate('/dashboard')
       } else {
         navigate('/onboarding')
       }
     }
+  }
+
+  const handleGuestLogin = async () => {
+    setError('')
+    setLoading(true)
+
+    const result = await loginAsGuest()
+
+    setLoading(false)
+
+    if (!result?.success) {
+      setError(result?.message || 'Guest login failed')
+      return
+    }
+
+    // Guest users skip onboarding and go straight to dashboard
+    navigate('/dashboard')
   }
 
   useEffect(() => {
@@ -78,6 +101,7 @@ export default function Login() {
                 onChange={e => setName(e.target.value)}
                 required
                 placeholder="Your name"
+                disabled={loading}
               />
             </label>
           )}
@@ -91,6 +115,7 @@ export default function Login() {
               onChange={e => setEmail(e.target.value)}
               required
               placeholder="you@example.com"
+              disabled={loading}
             />
           </label>
 
@@ -103,29 +128,45 @@ export default function Login() {
               onChange={e => setPassword(e.target.value)}
               required
               placeholder="Enter your password"
+              disabled={loading}
             />
           </label>
 
-          <button type="submit">
-            {mode === 'login' ? 'Login' : 'Create Account'}
+          <button type="submit" disabled={loading}>
+            {loading ? 'Loading...' : (mode === 'login' ? 'Login' : 'Create Account')}
           </button>
         </form>
 
         {/* ERROR MESSAGE */}
         {error && (
-          <p style={{ color: 'red', marginTop: '10px' }}>
+          <p style={{ color: '#ff6b6b', marginTop: '10px', textAlign: 'center' }}>
             {error}
           </p>
         )}
 
+        {/* DIVIDER */}
+        <div className={styles.divider}>
+          <span>or</span>
+        </div>
+
+        {/* GUEST LOGIN */}
+        <button 
+          className={styles.guestBtn}
+          onClick={handleGuestLogin}
+          disabled={loading}
+          type="button"
+        >
+          {loading ? '⏳ Loading...' : '👤 Join as Guest'}
+        </button>
+
         {/* Toggle */}
-        <p style={{ marginTop: '1rem' }}>
+        <p style={{ marginTop: '1rem', textAlign: 'center' }}>
           {mode === 'login' ? (
             <>
               New here?{' '}
               <span
-                style={{ color: '#4cafef', cursor: 'pointer' }}
-                onClick={() => setMode('signup')}
+                style={{ color: '#4cafef', cursor: 'pointer', fontWeight: 'bold' }}
+                onClick={() => { setMode('signup'); setError(''); }}
               >
                 Create account
               </span>
@@ -134,8 +175,8 @@ export default function Login() {
             <>
               Already have an account?{' '}
               <span
-                style={{ color: '#4cafef', cursor: 'pointer' }}
-                onClick={() => setMode('login')}
+                style={{ color: '#4cafef', cursor: 'pointer', fontWeight: 'bold' }}
+                onClick={() => { setMode('login'); setError(''); }}
               >
                 Login
               </span>

@@ -4,6 +4,7 @@ const router = express.Router()
 const {
   register,
   login,
+  guestLogin,
   completeOnboarding,
   getCurrentUser,
   updateProfile,
@@ -15,6 +16,7 @@ const authMiddleware = require("../middleware/authMiddleware")
 // ================= PUBLIC =================
 router.post("/signup", register)
 router.post("/login", login)
+router.post("/guest", guestLogin)
 
 // ================= PROTECTED =================
 router.get("/me", authMiddleware, getCurrentUser)

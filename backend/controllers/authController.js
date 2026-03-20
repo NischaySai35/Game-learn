@@ -98,6 +98,52 @@ exports.login = async (req, res) => {
   }
 }
 
+// ================= GUEST LOGIN =================
+exports.guestLogin = async (req, res) => {
+  try {
+    // Create a temporary guest user
+    const guestName = `Guest_${Math.floor(Math.random() * 999999)}`
+    const guestEmail = `guest_${Date.now()}@gamelearn.local`
+    const guestPassword = "guest_password_" + Math.random().toString(36).slice(2)
+
+    // Check if guest already exists with this email (shouldn't happen but just in case)
+    let user = await User.findOne({ email: guestEmail })
+
+    // If not, create new guest user
+    if (!user) {
+      const hashedPassword = await bcrypt.hash(guestPassword, 10)
+
+      user = await User.create({
+        name: guestName,
+        email: guestEmail,
+        password: hashedPassword,
+        isGuest: true,
+        interestedRoles: [],
+        skillsProgress: [],
+        dailyLearningTarget: 30,
+        hasCompletedOnboarding: true, // Skip onboarding for guests
+      })
+    }
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    )
+
+    const userData = user.toObject()
+    delete userData.password
+
+    res.json({
+      token,
+      user: userData
+    })
+
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
 // ================= GET CURRENT USER =================
 exports.getCurrentUser = async (req, res) => {
   try {

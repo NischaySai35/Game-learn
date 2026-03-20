@@ -179,12 +179,16 @@ export const GameProvider = ({ children }) => {
           ? `${API_BASE_URL}/auth/login`
           : `${API_BASE_URL}/auth/signup`
 
+      const body = mode === 'signup' 
+        ? { name, email, password }
+        : { email, password }
+
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify(body),
       })
 
       const data = await res.json()
@@ -211,6 +215,46 @@ export const GameProvider = ({ children }) => {
           : 'Account created successfully!',
         'success'
       )
+
+      return { success: true }
+
+    } catch (err) {
+      return {
+        success: false,
+        message: err.message,
+      }
+    }
+  }, [addNotification])
+
+  // ✅ GUEST LOGIN
+  const loginAsGuest = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/guest`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        return {
+          success: false,
+          message: data.message || 'Guest login failed',
+        }
+      }
+
+      // ✅ Store JWT token
+      if (data.token) {
+        localStorage.setItem('token', data.token)
+      }
+
+      // ✅ Set user as guest
+      setUser(data.user)
+      setIsAuthenticated(true)
+
+      addNotification('Welcome! You are logged in as Guest.', 'success')
 
       return { success: true }
 
@@ -395,6 +439,7 @@ export const GameProvider = ({ children }) => {
     user,
     isAuthenticated,
     loginUser,
+    loginAsGuest,
     logoutUser,
     setUser,
     setOnboardingProfile,

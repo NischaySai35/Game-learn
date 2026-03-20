@@ -80,13 +80,13 @@ export default function CourseDetail() {
 
         <ul>
           {topics.length > 0 ? (
-            topics.map((topic, index) => (
-              <li key={index}>
+            topics.map((topic) => (
+              <li key={topic._id}>
                 <strong>{topic.title}</strong>
 
                 <button
                   onClick={() =>
-                    navigate(`/course/${course._id}/topic/${index}`)
+                    navigate(`/course/${course._id}/topic/${topic._id}`)
                   }
                 >
                   Start Maze

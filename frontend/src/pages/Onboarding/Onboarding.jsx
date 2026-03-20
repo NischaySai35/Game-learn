@@ -71,7 +71,7 @@ export default function Onboarding() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1>Welcome to GameLearn</h1>
+        <h1>Welcome to FunLearn</h1>
         <p>Tell us a bit so we can personalize your learning path.</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>

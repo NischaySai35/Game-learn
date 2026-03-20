@@ -35,9 +35,11 @@
   text-shadow: 0 0 12px rgba(57, 255, 20, 0.4);
 }
 
-.logoIcon {
-  font-size: 24px;
-  display: inline-flex;
+.logoImage {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
 }
 
 .logoText {

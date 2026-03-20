@@ -103,7 +103,7 @@ app.use("/api/topics", topicRoutes);
 // ============================================
 app.get("/", (req, res) => {
   res.json({
-    message: "GameLearn API Running",
+    message: "FunLearn API Running",
     version: "1.0.0",
     environment: process.env.NODE_ENV || "development",
     timestamp: new Date().toISOString()

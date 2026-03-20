@@ -8,7 +8,7 @@ const USER_KEY = import.meta.env.VITE_AUTH_USER_KEY || 'auth_user'
  */
 export const registerUser = async (userName, email, password, interestedRoles, dailyLearningTarget) => {
   try {
-    const response = await apiClient.post('/auth/register', {
+    const response = await apiClient.post('/auth/signup', {
       name: userName,
       email,
       password,

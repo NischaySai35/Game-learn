@@ -10,6 +10,7 @@ import { Card } from '../../components/common/Card'
 import { Badge } from '../../components/common/Badge'
 import styles from './Profile.module.css'
 
+
 export default function Profile() {
   const { user, logoutUser } = useGame()
   const navigate = useNavigate()
@@ -70,7 +71,7 @@ export default function Profile() {
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity }}
             >
-              {user.avatar}
+              {user.avatar ? user.avatar : '🧑'}
             </motion.div>
             <motion.div
               className={styles.levelBadge}
@@ -86,13 +87,13 @@ export default function Profile() {
             <h1 className={styles.userName}>{user.name}</h1>
             <div className={styles.userStats}>
               <Badge variant="primary" icon="⭐">
-                {user.totalXP?.toLocaleString()} XP
+                {(user.totalXP ?? 0).toLocaleString()} XP
               </Badge>
               <Badge variant="warning" icon="💎">
-                {user.coins} Coins
+                {(user.coins ?? 0).toLocaleString()} Coins
               </Badge>
               <Badge variant="streak" icon="🔥">
-                {user.streakDays} Days
+                {(user.streakDays ?? 0).toLocaleString()} Days
               </Badge>
             </div>
           </div>
@@ -159,11 +160,11 @@ export default function Profile() {
         transition={{ duration: 0.6, delay: 0.5 }}
       >
         <h2 className={styles.sectionTitle}>🎓 Certificates</h2>
-        {user.certificates.length === 0 ? (
+        {(!user.certificates || user.certificates.length === 0) ? (
           <p>No certificates yet. Complete a course and project to generate one.</p>
         ) : (
           <div className={styles.certificateGrid}>
-            {user.certificates.map((cert, idx) => (
+            {(user.certificates || []).map((cert, idx) => (
               <div key={idx} className={styles.certificateCard}>
                 <h3>{cert.course}</h3>
                 <p><strong>Project:</strong> {cert.project}</p>

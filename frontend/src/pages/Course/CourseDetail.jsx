@@ -44,6 +44,7 @@ export default function CourseDetail() {
     completeCourse(course.title)
     addXP(300)
     addCoins(75)
+    recordLearningSession(30)
   }
 
   const Icon = courseIcons[course.title]
@@ -71,7 +72,6 @@ export default function CourseDetail() {
 
       <div className={styles.actions}>
         <button onClick={handleCompleteCourse}>Mark Course Complete</button>
-        <button onClick={() => recordLearningSession(30)}>Log 30 min</button>
         <button onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
       </div>
 

@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react'
 
 const GameContext = createContext()
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('token')
@@ -84,7 +84,7 @@ const defaultUserState = {
 
   badge: null, // ✅ initially null
 
-  onboardingCompleted: false, // ✅ important
+  hasCompletedOnboarding: false, // ✅ important
 
   recentActivity: [],
   dailyTargetMinutes: 60,
@@ -227,13 +227,19 @@ export const GameProvider = ({ children }) => {
     name,
     email,
     interestedRoles,
-    skillsProgress,
+    skills,
     dailyLearningTarget
   }) => {
     try {
       const token = localStorage.getItem('token')
 
-      // derive recommended courses (frontend logic still useful)
+      // Convert raw skills array to structured skillsProgress format
+      const skillsProgress = (skills || []).map(skill => ({
+        skill,
+        progress: 0
+      }))
+
+      // Derive recommended courses from selected roles
       const recommendedFromRoles = interestedRoles.flatMap(
         role => roleCourseMap[role] || []
       )
@@ -262,8 +268,8 @@ export const GameProvider = ({ children }) => {
         return
       }
 
-      // ✅ Update user from backend response
-      setUser(data.user)
+      // Backend returns the user object directly (not wrapped in { user })
+      setUser(data)
 
       addNotification('Onboarding completed!', 'success')
 
@@ -328,7 +334,7 @@ export const GameProvider = ({ children }) => {
     if (!isAuthenticated || !user) return
 
     try {
-      const res = await fetch(`${API_BASE_URL}/user/learning-session`, {
+      const res = await fetch(`${API_BASE_URL}/learning/time`, {
         method: 'POST',
         headers: getAuthHeader(),
         body: JSON.stringify({ minutes }),

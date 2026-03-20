@@ -2,22 +2,25 @@ const User = require("../models/User")
 const updateStreak = require("../utils/streakLogic")
 
 exports.updateLearningTime = async (req, res) => {
-
   try {
-
-    const { userId, minutes } = req.body
+    const userId = req.user.id
+    const { minutes } = req.body
 
     const user = await User.findById(userId)
 
-    user.todayLearningTime += minutes
+    const previousTime = user.todayLearningTime || 0
+    // Call the external streak logic (it modifies the user object in place)
+    updateStreak(user, minutes)
 
-    updateStreak(user)
+    const goalReached = previousTime < user.dailyLearningTarget && user.todayLearningTime >= user.dailyLearningTarget
+    const streakRecovered = false // Add your recovery logic here if needed
 
     await user.save()
 
     res.json({
-      todayLearningTime: user.todayLearningTime,
-      streak: user.streak
+      user,
+      goalReached,
+      streakRecovered
     })
 
   } catch (error) {

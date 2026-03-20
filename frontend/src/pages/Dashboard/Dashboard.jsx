@@ -87,7 +87,6 @@ export default function Dashboard() {
           {user.streakState?.paused && (
             <Badge variant="warning">⏳ Recovery: {user.streakState.recoveryRequiredMinutes} min</Badge>
           )}
-          <button className={styles.smallButton} onClick={() => recordLearningSession(15)}>Log 15min</button>
         </div>
       </section>
 

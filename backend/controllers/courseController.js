@@ -78,16 +78,16 @@ exports.getPersonalizedCourses = async (req, res) => {
 
     const roles = user.interestedRoles || [];
 
-    // Safe extraction of skills
-    const skills = (user.skillsProgress || []).map(s => s.skill);
+    // Safe extraction of skills and convert to Regex for case-insensitive matching
+    const skills = (user.skillsProgress || []).map(s => new RegExp(s.skill, 'i'));
 
     // ============================================
-    // RECOMMENDED COURSES (Role OR Category match)
+    // RECOMMENDED COURSES (Role OR Skills match)
     // ============================================
     const recommended = await Course.find({
       $or: [
         { role: { $in: roles } },
-        { category: { $in: skills } }
+        { skills: { $in: skills } }
       ]
     });
 

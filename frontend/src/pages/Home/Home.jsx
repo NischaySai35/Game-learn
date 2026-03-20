@@ -2,34 +2,50 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { CourseCard } from '../../components/features/courses/CourseCard'
-import { getCourses } from '../../api/courseApi'
+import { getCourses, getPersonalizedCourses } from '../../api/courseApi'
 import { useGame } from '../../context/GameContext'
 import styles from './Home.module.css'
+import courseIcons from '../../assets/courseIcons'
 
 export default function Home() {
   const { user, isAuthenticated } = useGame()
   const navigate = useNavigate()
   const [courses, setCourses] = useState([])
+  const [recommendedCourseObjects, setRecommendedCourseObjects] = useState([])
   const [loading, setLoading] = useState(true)
-  const recommendedCourses = user?.recommendedCourses || []
-  const recommendedCourseObjects = courses.filter(course =>
-  recommendedCourses.includes(course.title)
-)
 
   useEffect(() => {
+    let ignore = false
+
     const fetchCourses = async () => {
       try {
-        const response = await getCourses()
-        setCourses(response.data)
+        if (isAuthenticated && user?._id) {
+          const response = await getPersonalizedCourses(user._id)
+          if (!ignore) {
+            setRecommendedCourseObjects(response.data.recommended)
+            setCourses(response.data.explore)
+          }
+        } else {
+          const response = await getCourses()
+          if (!ignore) {
+            setCourses(response.data)
+            setRecommendedCourseObjects([])
+          }
+        }
       } catch (error) {
         console.error('Failed to fetch courses:', error)
       } finally {
-        setLoading(false)
+        if (!ignore) setLoading(false)
       }
     }
 
+    if (isAuthenticated && !user?._id) return
+
     fetchCourses()
-  }, [])
+
+    return () => { ignore = true }
+  }, [isAuthenticated, user?._id])
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -119,51 +135,43 @@ export default function Home() {
         </motion.div>
         <div className={styles.recommendedBody}>
 
-          {/* Badges (existing behavior preserved) */}
-          {recommendedCourses.length > 0 ? (
-          recommendedCourses.map((course, index) => (
-            <span key={index} className={styles.recBadge}>
-              {course}
-            </span>
-          ))
-        ) : (
-          <>
-            {isAuthenticated && !user?.hasCompletedOnboarding && (
-              <p className={styles.emptyRec}>
-                Complete onboarding to unlock personalized recommendations.
-              </p>
-            )}
-          </>
-        )}
-
-          {/* NEW: Show actual course cards (does NOT break anything) */}
+          {/* Show actual course cards from backend API */}
           {recommendedCourseObjects.length > 0 && (
             <div className={styles.coursesGrid}>
-              {recommendedCourseObjects.map((course, index) => (
-                <CourseCard
-                  key={course._id || index}
-                  {...course}
-                  progress={isAuthenticated ? course.progress : 0}
-                  completed={isAuthenticated ? course.completed : 0}
-                  isAuthenticated={isAuthenticated}
-                  onClick={() => {
-                    if (isAuthenticated) {
-                      navigate(`/course/${course._id}`)
-                    } else {
-                      navigate('/login')
-                    }
-                  }}
-                />
-              ))}
+              {recommendedCourseObjects.map((course, index) => {
+                const IconComponent = courseIcons[course.title]
+                const iconEl = IconComponent ? <IconComponent size={28} /> : '📚'
+                return (
+                  <CourseCard
+                    key={course._id || index}
+                    {...course}
+                    icon={iconEl}
+                    progress={isAuthenticated ? course.progress : 0}
+                    completed={isAuthenticated ? course.completed : 0}
+                    isAuthenticated={isAuthenticated}
+                    onClick={() => {
+                      if (isAuthenticated) {
+                        navigate(`/course/${course._id}`)
+                      } else {
+                        navigate('/login')
+                      }
+                    }}
+                  />
+                )
+              })}
             </div>
-            
           )}
 
+          {recommendedCourseObjects.length === 0 && isAuthenticated && !user?.hasCompletedOnboarding && (
+            <p className={styles.emptyRec}>
+              Complete onboarding to unlock personalized recommendations.
+            </p>
+          )}
           {isAuthenticated && !user?.hasCompletedOnboarding && (
-          <Link className={styles.onboardButton} to="/onboarding">
-            Complete Onboarding
-          </Link>
-        )}
+            <Link className={styles.onboardButton} to="/onboarding">
+              Complete Onboarding
+            </Link>
+          )}
 
         </div>
       </section>
@@ -216,23 +224,28 @@ export default function Home() {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {courses.map((course, index) => (
-              <motion.div key={course._id || index} variants={itemVariants}>
-                <CourseCard
-                  {...course}
-                  progress={isAuthenticated ? course.progress : 0}
-                  completed={isAuthenticated ? course.completed : 0}
-                  isAuthenticated={isAuthenticated}
-                  onClick={() => {
-                    if (isAuthenticated) {
-                      navigate(`/course/${course._id}`)
-                    } else {
-                      navigate('/login')
-                    }
-                  }}
-                />
-              </motion.div>
-            ))}
+            {courses.map((course, index) => {
+              const IconComponent = courseIcons[course.title]
+              const iconEl = IconComponent ? <IconComponent size={28} /> : '📚'
+              return (
+                <motion.div key={course._id || index} variants={itemVariants}>
+                  <CourseCard
+                    {...course}
+                    icon={iconEl}
+                    progress={isAuthenticated ? course.progress : 0}
+                    completed={isAuthenticated ? course.completed : 0}
+                    isAuthenticated={isAuthenticated}
+                    onClick={() => {
+                      if (isAuthenticated) {
+                        navigate(`/course/${course._id}`)
+                      } else {
+                        navigate('/login')
+                      }
+                    }}
+                  />
+                </motion.div>
+              )
+            })}
           </motion.div>
         )}
       </section>

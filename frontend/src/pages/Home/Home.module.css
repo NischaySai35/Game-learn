@@ -141,6 +141,7 @@
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-2xl);
+  width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -205,10 +206,7 @@
 
 .recommendedBody {
   margin-top: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-  align-items: center;
+  display: block;
 }
 
 .recBadge {
@@ -228,7 +226,9 @@
 }
 
 .onboardButton {
-  margin-left: auto;
+  display: block;
+  width: max-content;
+  margin: 1.5rem auto 0;
   color: #fff;
   background: linear-gradient(135deg, #2c78ff, #728fff);
   border: none;

@@ -15,6 +15,7 @@ export default function Quiz() {
   const [peerScores, setPeerScores] = useState([])
   const [feedback, setFeedback] = useState('')
   const [attemptKey, setAttemptKey] = useState(0)
+  const [startTime, setStartTime] = useState(Date.now())
 
   const questions = useMemo(() => {
     const qlist = mockQuizBank.flatMap(item => item.questions)
@@ -27,6 +28,7 @@ export default function Quiz() {
     setShowResult(false)
     setPeerScores([])
     setFeedback('')
+    setStartTime(Date.now())
   }, [mode])
 
   const handleAnswer = (qId, option) => {
@@ -70,7 +72,10 @@ export default function Quiz() {
 
   const handleFinish = () => {
     const summary = giveRewards()
-    addNotification(`Quiz complete! Score ${scorePercent}%`, 'success')
+    const elapsedMinutes = Math.max(5, Math.round((Date.now() - startTime) / 60000))
+    recordLearningSession(elapsedMinutes)
+
+    addNotification(`Quiz complete! Score ${scorePercent}%. Logged ${elapsedMinutes}m.`, 'success')
     if (mode === 'peer' && summary?.placement === 1) {
       unlockAchievement(4)
       addNotification('Top ranking in peer challenge! 🥇', 'success')
@@ -129,6 +134,7 @@ export default function Quiz() {
               setShowResult(false)
               setPeerScores([])
               setFeedback('')
+              setStartTime(Date.now())
             }}
             className={styles.retryButton}
           >

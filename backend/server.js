@@ -19,6 +19,9 @@ const profileRoutes = require("./routes/profileRoutes");
 const progressRoutes = require("./routes/courseProgressRoutes");
 const unlockRoutes = require("./routes/unlockRoutes");
 const contentRoutes = require("./routes/contentRoutes");
+const topicRoutes = require("./routes/topicRoutes");
+const Course = require("./models/Course");
+const coursesData = require("./data/coursesData");
 
 const app = express();
 
@@ -52,6 +55,21 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // ============================================
 connectDB();
 
+const seedCourses = async () => {
+  try {
+    const count = await Course.countDocuments();
+
+    if (count === 0) {
+      await Course.insertMany(coursesData);
+      console.log("Courses inserted automatically");
+    } else {
+      console.log("Courses already exist");
+    }
+  } catch (error) {
+    console.error("Error seeding courses:", error);
+  }
+};
+
 // ============================================
 // STATIC FILES
 // ============================================
@@ -74,6 +92,7 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/unlock", unlockRoutes);
 app.use("/api/content", contentRoutes);
+app.use("/api/topics", topicRoutes);
 
 // ============================================
 // HEALTH CHECK ROUTE
@@ -145,19 +164,25 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-const server = app.listen(PORT, () => {
-  console.log(`✓ Server running on port ${PORT}`);
-  console.log(`✓ Environment: ${NODE_ENV}`);
-  console.log(`✓ MongoDB: ${process.env.MONGO_URI || 'mongodb://localhost:27017/gamelearn'}`);
-  console.log(`✓ CORS Origins: ${allowedOrigins.join(', ')}`);
-  console.log(`\n🚀 Backend ready at http://localhost:${PORT}`);
-});
+mongoose.connection.once("open", async () => {
+  console.log("MongoDB connected");
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully...');
-  server.close(() => {
-    console.log('Server closed');
-    process.exit(0);
+  await seedCourses();
+
+  const server = app.listen(PORT, () => {
+    console.log(`✓ Server running on port ${PORT}`);
+    console.log(`✓ Environment: ${NODE_ENV}`);
+    console.log(`✓ MongoDB: ${process.env.MONGO_URI || 'mongodb://localhost:27017/gamelearn'}`);
+    console.log(`✓ CORS Origins: ${allowedOrigins.join(', ')}`);
+    console.log(`\n🚀 Backend ready at http://localhost:${PORT}`);
+  });
+
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully...');
+    server.close(() => {
+      console.log('Server closed');
+      process.exit(0);
+    });
   });
 });
